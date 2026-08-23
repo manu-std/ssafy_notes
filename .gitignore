@@ -28,3 +28,6 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows
+
+### 개인 풀이/채점용 (커밋 제외)
+AI_python/문제/[0-9][0-9].md
