@@ -31,3 +31,11 @@ $RECYCLE.BIN/
 
 ### 개인 풀이/채점용 (커밋 제외)
 AI_python/문제/[0-9][0-9].md
+
+### RAG 실습 (커밋 제외)
+.env
+!.env.example
+AI_python/시험대비/RAG/data/
+**/__pycache__/
+**/chroma_db/
+**/.chroma/
