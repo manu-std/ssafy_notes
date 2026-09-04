@@ -3,8 +3,8 @@ sys.stdin = open('input.txt')
 T = int(input())
 
 def solve(N, M, arr):
-    # 사용할 방향들, 배수를 곱해서 사용한다.
-    dirs = [(1,0),(0,1)]
+    # 사용할 축들, 배수를 곱해서 사용한다.
+    axes = [(1,0),(0,1)]
     max_pollen = 0 
 
     for r in range(N):
@@ -20,9 +20,9 @@ def solve(N, M, arr):
             
             # dir에 i배 만큼을 순회 하며 더한다
             for i in range(-num,num+1):
-                for dir in dirs:
-                    if 0 <= r+dir[0] * i < N and 0 <= c + dir[1] * i < M:
-                        tmp += arr[r+dir[0] * i][c + dir[1] * i] 
+                for axis in axes:
+                    if 0 <= r+axis[0] * i < N and 0 <= c + axis[1] * i < M:
+                        tmp += arr[r+axis[0] * i][c + axis[1] * i] 
             # 중심은 두번 더해지므로, for문 바깥에서 한번 빼준다
             tmp -= arr[r][c]
             if tmp > max_pollen:
