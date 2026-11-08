@@ -1,0 +1,973 @@
+@@ 06
+# 1
+Q `forms.Form`을 상속한 일반 Form이 해주는 일로 **옳지 않은** 것은?
+1 입력받은 데이터를 DB 테이블에 자동으로 저장한다.
+2 필드 정의를 바탕으로 input 태그를 자동 생성한다.
+3 필드 규칙에 따라 입력값을 검증한다.
+4 필드별 에러 메시지를 모아 템플릿에 출력할 수 있게 한다.
+A 1
+E 일반 Form에는 save()가 없다. DB 저장은 모델과 연결된 ModelForm의 기능이다.
+
+# 2
+Q content 필드를 여러 줄 입력창(textarea)으로 표시하려면 빈칸에 무엇을 써야 하는가?
+```python
+class ArticleForm(forms.Form):
+    title = forms.CharField(max_length=10)
+    content = forms.CharField(_______)
+```
+1 `type='textarea'`
+2 `widget=forms.Textarea`
+3 `field=forms.TextField`
+4 `attrs={'textarea': True}`
+A 2
+E widget은 필드가 HTML에서 어떤 입력 요소로 그려질지 정한다. 겉모습만 바꿀 뿐 검증 규칙은 그대로.
+
+# 3
+Q new view에서 빈 입력 양식을 템플릿에 넘기는 코드로 옳은 것은?
+1 `form = ArticleForm()` 후 `context = {'form': form}`
+2 `form = ArticleForm(request.POST)` 후 `context = {'form': form}`
+3 `form = ArticleForm` 후 `context = {'form': form.save()}`
+4 `context = {'form': 'ArticleForm'}`
+A 1
+E 데이터 없이 만든 unbound form을 context로 넘겨야 템플릿에서 `{{ form }}`으로 쓸 수 있다.
+
+# 4
+Q 템플릿에 `{{ form }}`을 쓸 때, Form이 만들어 주지 않아 **직접 작성해야 하는 것**은?
+1 form 태그, csrf_token, 제출 버튼
+2 각 필드의 `<label>`과 `<input>` 태그
+3 필드별 에러 메시지와 도움말(help text)
+4 input의 name·id·required 속성
+A 1
+E `{{ form }}`은 필드(label·input·에러)만 그린다. form 태그·CSRF 토큰·submit 버튼은 그대로 직접 쓴다.
+
+# 5
+Q Form을 템플릿에 적용했는데 create view를 고치지 않아도 글 작성이 되던 이유는?
+1 Form이 내부적으로 DB 저장까지 자동으로 처리하기 때문에
+2 create view가 Form의 save()를 자동으로 호출하기 때문에
+3 Form이 만든 input의 name이 기존 POST 키와 같아서
+4 Form이 GET 요청을 POST로 바꿔서 보내 주기 때문에
+A 3
+E 이 단계의 Form은 "HTML 대신 써주기"만 한다. 서버 검증은 is_valid()부터 시작된다.
+
+# 6
+Q Form과 ModelForm의 선택으로 **옳은** 것은?
+1 로그인 폼 — ModelForm / 게시글 작성 — Form
+2 검색 폼 — Form / 회원가입 — ModelForm
+3 게시글 작성 — Form / 회원가입 — Form
+4 검색 폼 — ModelForm / 로그인 — ModelForm
+A 2
+E 기준은 "DB에 저장하는가". 검색·로그인은 저장하지 않으니 Form, 게시글·회원가입은 레코드가 생기니 ModelForm.
+
+# 7
+Q ModelForm이 필요한 이유로 가장 적절한 것은?
+1 Form보다 HTML 입력창을 더 보기 좋게 만들어 주기 때문에
+2 일반 Form에서는 유효성 검사를 할 수 없기 때문에
+3 모델과 폼에 필드 정보를 중복 작성하는 문제를 없애려고
+4 ModelForm을 쓰면 CSRF 토큰 없이도 POST를 보낼 수 있어서
+A 3
+E 모델의 max_length를 바꾸고 폼 수정을 잊으면 둘이 어긋난다. ModelForm은 모델 정의를 보고 폼을 알아서 만든다.
+
+# 8
+Q ModelForm의 `class Meta`에 대한 설명으로 **옳지 않은** 것은?
+1 어떤 모델과 연결할지(model)를 지정한다.
+2 사용할 필드(fields) 또는 제외할 필드(exclude)를 지정한다.
+3 폼을 어떻게 만들지에 대한 설정 공간이다.
+4 ModelForm이 Meta 클래스를 상속받아 기능을 물려받는 구조다.
+A 4
+E 클래스 안에 클래스가 있지만 상속 관계가 아니다. Meta는 설정 값을 적는 곳일 뿐.
+
+# 9
+Q Article 필드가 title, content, created_at(auto_now_add), updated_at(auto_now)일 때, 다음 ModelForm이 렌더링하는 입력 칸은?
+```python
+class ArticleForm(forms.ModelForm):
+    class Meta:
+        model = Article
+        exclude = ('title',)
+```
+1 title
+2 title, content
+3 content, created_at, updated_at
+4 content
+A 4
+E title은 제외했고, auto_now·auto_now_add 필드는 editable=False라 처음부터 폼 대상이 아니다. id도 마찬가지.
+
+# 10
+Q `fields = '__all__'` 사용 시 보안상 주의할 점으로 옳은 것은?
+1 id 같은 자동 생성 필드도 입력 칸으로 함께 나온다.
+2 나중에 추가된 모델 필드까지 폼에 자동 노출된다.
+3 '__all__'을 쓰면 is_valid() 검사가 생략된다.
+4 exclude와 함께 써야만 정상적으로 동작한다.
+A 2
+E 그래서 허용할 필드를 명시하는 쪽이 안전하다. 10단원 UserChangeForm에서 실제 문제가 된다.
+
+# 11
+Q `is_valid()`에 대한 설명으로 **옳지 않은** 것은?
+1 유효성 검사를 실행하고 결과를 Boolean으로 반환한다.
+2 통과하면 검증된 값을 cleaned_data로 쓸 수 있다.
+3 실패하면 form.errors에 필드별 에러가 담긴다.
+4 실패해도 일단 DB에 저장된 뒤 에러 메시지만 표시된다.
+A 4
+E 검증에 실패하면 저장하지 않는다. 에러가 담긴 form을 다시 보여줄 뿐이다.
+
+# 12
+Q ModelForm create view에서 유효성 검사에 **실패**했을 때 올바른 처리는?
+1 `ArticleForm()`을 새로 만들어 render한다.
+2 `redirect('articles:index')`로 목록에 보낸다.
+3 에러가 담긴 기존 form 객체를 그대로 render한다.
+4 `form.save()`로 일단 저장한다.
+A 3
+E 새 폼을 만들면 사용자가 입력한 값과 에러 메시지가 다 사라진다.
+
+# 13
+Q 제목 input에 스페이스바로 공백만 입력하고 제출했을 때 일어나는 일은?
+1 브라우저의 required 검사에 걸려 제출되지 않는다.
+2 공백 문자열이 그대로 제목으로 저장되고 detail로 이동한다.
+3 Django가 공백을 '제목 없음'으로 바꿔 저장한다.
+4 브라우저는 통과시키지만 Django가 빈 값 에러를 낸다.
+A 4
+E 아예 비우면 브라우저 required가 먼저 막고, 공백만 넣으면 Django가 앞뒤 공백을 제거한 뒤 빈 값으로 판단한다.
+
+# 14
+Q `article = form.save(commit=False)`에 대한 설명으로 옳은 것은?
+1 DB에 저장한 뒤 반환값 없이 None을 돌려준다.
+2 DB에 저장하지 않은 모델 인스턴스를 반환한다.
+3 유효성 검사를 건너뛰고 곧바로 DB에 저장한다.
+4 저장을 취소하고 form의 입력값을 초기화한다.
+A 2
+E 객체만 만들어 두고 값을 더 채운 뒤 `article.save()`로 저장한다.
+
+# 15
+Q `commit=False`를 쓰는 대표적인 상황은?
+1 폼에 없는 필드(예: 작성자)를 코드로 채워 저장할 때
+2 유효성 검사를 건너뛰고 빠르게 저장하고 싶을 때
+3 GET 요청에서 기존 값이 채워진 빈 폼을 보여줄 때
+4 저장된 데이터를 DB에서 삭제하기 전에 확인할 때
+A 1
+E 예: `article.user = request.user` 후 `article.save()`.
+
+# 16
+Q 수정 페이지(GET)에서 기존 값이 채워진 폼을 만드는 코드는?
+1 `ArticleForm(article)`
+2 `ArticleForm(request.POST)`
+3 `ArticleForm(instance=article)`
+4 `ArticleForm(data=article)`
+A 3
+E instance로 수정 대상을 넘기면 기존 값이 채워진다. 손으로 value를 넣던 작업을 대신해 준다.
+
+# 17
+Q 수정 처리(POST)에서 `instance=article`을 빠뜨리고 `ArticleForm(request.POST)`로 저장하면?
+1 기존 글의 제목과 내용이 정상적으로 수정된다.
+2 pk가 없어 IntegrityError가 발생하고 저장되지 않는다.
+3 기존 글은 그대로이고 새 글이 생긴다.
+4 기존 글이 삭제되고 같은 pk로 다시 저장된다.
+A 3
+E save()는 instance가 없으면 생성(INSERT), 있으면 수정(UPDATE).
+
+# 18
+Q GET/POST를 하나로 합친 create view에서 빈칸에 들어갈 조건은?
+```python
+def create(request):
+    if _______:
+        form = ArticleForm(request.POST)
+        ...
+```
+1 `request.POST`
+2 `request.method == 'POST'`
+3 `request.method == POST`
+4 `form.is_valid()`
+A 2
+E 요청 메서드는 `request.method`에 문자열('GET', 'POST')로 담긴다.
+
+# 19
+Q 다음 통합 create view에 대한 설명으로 **옳지 않은** 것은?
+```python
+def create(request):
+    if request.method == 'POST':
+        form = ArticleForm(request.POST)
+        if form.is_valid():
+            article = form.save()
+            return redirect('articles:detail', article.pk)
+    else:
+        form = ArticleForm()
+    context = {'form': form}
+    return render(request, 'articles/create.html', context)
+```
+1 GET 요청이면 빈 폼을 render한다.
+2 POST에서 검증에 성공하면 detail로 redirect한다.
+3 POST에서 검증에 실패하면 에러가 담긴 폼을 render한다.
+4 마지막 context와 render는 GET 요청일 때만 실행된다.
+A 4
+E context·render는 if/else 바깥이라 GET과 "검증 실패한 POST"가 함께 쓴다.
+
+# 20
+Q Form 렌더링 옵션에 대한 설명으로 **옳은** 것은?
+1 `{{ form.as_p }}`는 각 필드를 `<p>` 태그로 감싸 출력한다.
+2 `{{ form.as_table }}`은 `<table>` 태그까지 자동으로 만들어 준다.
+3 `{{ form.as_ul }}`은 각 필드를 `<p>` 태그로 출력한다.
+4 `{{ form.title.errors }}`는 title 필드의 input 태그를 출력한다.
+A 1
+E as_table은 `<tr>`만, as_ul은 `<li>`만 출력하므로 table·ul은 직접 감싸야 한다. `.errors`는 에러 메시지.
+
+@@ 07
+# 1
+Q Static files와 Media files의 구분으로 **옳은** 것은?
+1 Static은 개발자가 미리 준비한 파일, Media는 사용자가 업로드한 파일이다.
+2 Static은 사용자가 업로드한 파일, Media는 개발자가 준비한 파일이다.
+3 Static은 이미지만, Media는 CSS·JS만 포함한다.
+4 둘 다 파일 자체가 DB에 저장된다.
+A 1
+E 만드는 주체가 기준이다. 로고·CSS는 Static, 후기 사진처럼 사용자가 올린 건 Media.
+
+# 2
+Q Django 서비스를 AWS에 배포할 때 업로드 이미지 같은 파일을 저장하는 서비스는?
+1 EC2
+2 RDS
+3 S3
+4 IAM
+A 3
+E EC2 = 애플리케이션 서버 실행, S3 = 객체 스토리지(파일 저장), RDS = 관리형 관계형 DB.
+
+# 3
+Q 정적 파일이 웹 페이지에 보이기 위한 핵심 조건은?
+1 파일이 DB에 저장되어 있어야 한다.
+2 그 파일에 접근할 수 있는 고유한 URL이 있어야 한다.
+3 파일 이름이 static으로 시작해야 한다.
+4 파일이 manage.py와 같은 폴더에 있어야 한다.
+A 2
+E 컴퓨터에 파일이 있는 것만으로는 안 된다. 웹에서 찾아갈 주소(URL)가 필요하다.
+
+# 4
+Q Django가 정적 파일을 찾는 기본 경로는?
+1 `app폴더/static/`
+2 `프로젝트폴더/staticfiles/`
+3 `app폴더/templates/static/`
+4 `BASE_DIR/media/`
+A 1
+E 기본 경로는 각 앱의 static 폴더. static 태그에는 그 이후 경로만 적는다.
+
+# 5
+Q 템플릿에서 static 태그를 쓰기 전에 반드시 작성해야 하는 코드는?
+1 `{% load static %}`
+2 `{% import static %}`
+3 `{% include static %}`
+4 `{% extends static %}`
+A 1
+E static은 built-in 태그가 아니라서 load로 불러와야 한다.
+
+# 6
+Q `{% load static %}`에 대한 설명으로 **옳지 않은** 것은?
+1 static 관련 태그를 쓰겠다는 선언이다.
+2 extends를 쓰는 템플릿에서는 extends 바로 다음 줄에 작성한다.
+3 built-in 태그가 아니기 때문에 불러와야 한다.
+4 부모 템플릿에서 load했다면 자식에서는 다시 load할 필요가 없다.
+A 4
+E load는 템플릿마다 따로 적용된다. 부모에서 load했어도 자식에서 static을 쓰려면 다시 load해야 한다.
+
+# 7
+Q `STATIC_URL = 'static/'`, 파일이 `articles/static/images/sample-1.png`일 때 `{% static 'images/sample-1.png' %}`가 만드는 주소는?
+1 `articles/static/images/sample-1.png`
+2 `/articles/images/sample-1.png`
+3 `/static/images/sample-1.png`
+4 `C:/project/articles/static/images/sample-1.png`
+A 3
+E 서버 주소 + STATIC_URL + 정적 파일 경로. static 태그는 실제 파일 경로가 아니라 웹 주소를 만든다.
+
+# 8
+Q STATIC_URL에 대한 설명으로 **옳은** 것은?
+1 정적 파일이 저장된 서버의 실제 폴더 경로다.
+2 정적 파일을 추가로 탐색할 폴더 목록이다.
+3 값을 바꾸면 정적 파일의 실제 저장 위치도 함께 이동한다.
+4 정적 파일에 접근할 웹 주소의 접두사다.
+A 4
+E STATIC_URL은 브라우저에서만 쓰는 주소의 시작 부분. ②는 STATICFILES_DIRS 설명.
+
+# 9
+Q 특정 앱에 속하지 않는 정적 파일을 프로젝트 최상위 static/ 폴더에서도 찾게 하는 설정은?
+1 `STATIC_URL = BASE_DIR / 'static'`
+2 `STATIC_ROOT = 'static/'`
+3 `STATICFILES_DIRS = [BASE_DIR / 'static']`
+4 `TEMPLATES['DIRS'] = [BASE_DIR / 'static']`
+A 3
+E STATICFILES_DIRS는 앱 static 외에 추가로 탐색할 실제 폴더 목록(리스트). 탐색 순서는 STATICFILES_DIRS가 먼저.
+
+# 10
+Q ImageField에 대한 설명으로 **옳은** 것은?
+1 이미지 파일 자체(바이너리)가 DB 컬럼에 저장된다.
+2 DB에는 상대 경로 문자열만 저장된다.
+3 별도 라이브러리 없이 바로 사용할 수 있다.
+4 upload_to는 반드시 지정해야 하는 필수 인자다.
+A 2
+E 파일은 MEDIA_ROOT 폴더에, DB에는 `images/sample.png` 같은 경로 문자열만. Pillow가 필요하고 upload_to는 선택 인자.
+
+# 11
+Q ImageField 추가 후 makemigrations에서 `Cannot use ImageField because Pillow is not installed` 에러가 났다. 해결 방법은?
+1 ImageField를 CharField로 바꾸고 경로를 직접 저장한다.
+2 settings.py에 MEDIA_ROOT를 먼저 설정한다.
+3 makemigrations 대신 migrate를 먼저 실행한다.
+4 Pillow를 설치한 뒤 다시 makemigrations 한다.
+A 4
+E ImageField는 이미지 검증에 Pillow 라이브러리가 반드시 필요하다. 설치 후 freeze로 requirements.txt도 갱신.
+
+# 12
+Q MEDIA_ROOT와 MEDIA_URL에 대한 설명으로 **옳은** 것은?
+1 ROOT는 웹 주소 접두사, URL은 실제 저장 폴더다.
+2 ROOT는 실제 저장 폴더, URL은 웹 주소 접두사다.
+3 둘 다 업로드 파일의 웹 주소를 뜻하는 설정이다.
+4 둘 다 settings.py가 아니라 models.py에 작성한다.
+A 2
+E ROOT = 실제 창고(서버 내부 경로), URL = 웹 주소 별명. settings.py에 `MEDIA_ROOT = BASE_DIR / 'media'`, `MEDIA_URL = 'media/'`.
+
+# 13
+Q 개발 서버에서 업로드 파일을 제공하기 위해 프로젝트 urls.py의 urlpatterns 뒤에 추가하는 코드는?
+1 `+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)`
+2 `+ static(settings.MEDIA_ROOT, document_root=settings.MEDIA_URL)`
+3 `+ include('media.urls')`
+4 `+ static(settings.STATIC_URL, document_root=settings.MEDIA_ROOT)`
+A 1
+E 첫 인자는 웹 주소(MEDIA_URL), document_root는 실제 폴더(MEDIA_ROOT). 순서가 바뀌면 설정이 꼬인다.
+
+# 14
+Q 위 `static()` 설정에 대한 설명으로 **옳지 않은** 것은?
+1 MEDIA_URL로 시작하는 요청을 MEDIA_ROOT 폴더에서 찾아 응답하게 한다.
+2 개발 서버는 media 파일을 자동으로 제공하지 않아 직접 추가해야 한다.
+3 DEBUG=True인 개발 단계에서만 동작한다.
+4 실제 운영 서비스에서도 이 설정으로 미디어 파일을 제공하는 것이 권장된다.
+A 4
+E 운영 환경에서는 웹 서버나 S3 같은 저장소가 미디어 파일을 제공한다.
+
+# 15
+Q 이미지를 첨부하지 않아도 게시글을 작성할 수 있게 하려면?
+1 `image = models.ImageField(upload_to='images/', null=True)`
+2 `image = models.ImageField(upload_to='images/', default=None)`
+3 `image = models.ImageField(upload_to='images/', blank=True)`
+4 `image = models.ImageField(upload_to='images/', required=False)`
+A 3
+E 폼 검증에서 빈 값을 허용하는 건 blank. null은 DB 레벨, required는 모델 필드 옵션이 아니다.
+
+# 16
+Q 파일 업로드 form에 반드시 추가해야 하는 속성은?
+1 `enctype="multipart/form-data"`
+2 `enctype="application/json"`
+3 `method="FILE"`
+4 `accept="multipart"`
+A 1
+E enctype은 form 데이터를 어떤 형식으로 인코딩할지 정한다. 파일 업로드는 multipart/form-data 필수.
+
+# 17
+Q 이미지 업로드 create view에서 빈칸에 알맞은 것은?
+```python
+form = ArticleForm(request.POST, _______)
+```
+1 `request.GET`
+2 `request.FILES`
+3 `request.IMAGE`
+4 `instance=request.FILES`
+A 2
+E 일반 입력값은 request.POST, 업로드 파일은 request.FILES에 담긴다.
+
+# 18
+Q ModelForm의 **두 번째 위치 인자**로 request.FILES를 넘기는 이유는?
+1 request.POST에 파일이 함께 들어 있어 순서를 맞추기 위해
+2 BaseModelForm 생성자의 두 번째 인자가 files라서
+3 CSRF 토큰을 검증할 때 업로드 파일 정보가 필요해서
+4 두 번째 위치 인자 자리가 instance로 정해져 있어서
+A 2
+E `__init__(self, data=None, files=None, ...)`. instance는 키워드 인자로 넘긴다.
+
+# 19
+Q 상세 페이지에서 업로드된 이미지를 출력하려 한다. 빈칸에 들어갈 코드로 **옳은** 것은?
+```html
+{% if article.image %}
+  _______
+{% endif %}
+```
+1 `<img src="{% static article.image %}">`
+2 `<img src="{{ article.image.path }}">`
+3 `<img src="{{ article.image.url }}">`
+4 `<img src="{{ article.image }}">`
+A 3
+E 업로드 파일의 웹 주소는 `.url`. .path는 서버 파일 경로라 웹에서 못 쓰고, static 태그는 개발자가 넣은 정적 파일용. 이미지 없는 글에서 .url을 쓰면 ValueError라 if로 감싼다.
+
+# 20
+Q 이미지가 포함된 게시글을 수정(POST)할 때 폼 생성 코드로 옳은 것은?
+1 `ArticleForm(request.POST, instance=article)`
+2 `ArticleForm(request.FILES, request.POST, instance=article)`
+3 `ArticleForm(request.POST, request.FILES)`
+4 `ArticleForm(request.POST, request.FILES, instance=article)`
+A 4
+E data → files 순서의 위치 인자 + 기존 글 수정용 instance. ②는 순서가 바뀌었고, ①은 파일이, ③은 instance가 빠졌다. 수정 form에도 enctype이 필요하다.
+
+@@ 08
+# 1
+Q HTTP의 무상태(stateless) 특징에 대한 설명으로 **옳은** 것은?
+1 서버가 이전 요청의 로그인 정보를 자동으로 기억한다.
+2 각 요청이 독립적이라 서버가 이전 요청을 기억하지 못한다.
+3 응답 후에도 연결을 계속 유지한다.
+4 클라이언트와 서버가 상태 정보를 HTTP 헤더에 영구 저장한다.
+A 2
+E 그래서 로그인 상태를 유지하려면 쿠키와 세션이 필요하다. ③은 비연결 지향(connectionless)과 반대.
+
+# 2
+Q 서버가 브라우저에 쿠키를 저장하도록 지시할 때 사용하는 응답 헤더는?
+1 `Cookie`
+2 `Set-Cookie`
+3 `Session-Id`
+4 `Authorization`
+A 2
+E 서버는 Set-Cookie로 내려주고, 브라우저는 이후 요청에 Cookie 헤더로 함께 보낸다.
+
+# 3
+Q 쿠키에 대한 설명으로 **옳은** 것은?
+1 브라우저에 저장되고, 이후 요청에 자동으로 함께 전송된다.
+2 서버의 DB 테이블에 저장되는 사용자 데이터다.
+3 브라우저에 저장되므로 비밀번호를 보관하기에 안전하다.
+4 만료 설정과 무관하게 브라우저를 닫아도 영구 유지된다.
+A 1
+E 쿠키는 클라이언트(브라우저) 쪽 저장소라 민감 정보를 넣으면 안 된다. 세션 쿠키는 브라우저를 닫으면 사라진다.
+
+# 4
+Q 쿠키 속성과 효과의 연결로 **옳지 않은** 것은?
+1 Secure — HTTPS 연결에서만 전송
+2 HttpOnly — JavaScript(document.cookie)로 읽지 못하게 함
+3 HttpOnly — 네트워크 요청에 쿠키가 실려 가는 것을 막음
+4 SameSite — 다른 사이트에서 시작된 요청에 쿠키 전송을 제한
+A 3
+E HttpOnly는 스크립트 접근만 막는다. 요청에는 정상적으로 실려 간다.
+
+# 5
+Q Django 기본 설정에서 세션 데이터가 저장되는 곳은?
+1 브라우저의 localStorage 저장소
+2 DB의 `django_session` 테이블
+3 settings.py의 SESSION 설정 값
+4 브라우저의 sessionid 쿠키 값 안
+A 2
+E 세션은 서버 쪽(기본 DB) 저장소, 브라우저는 그 세션을 찾는 열쇠(sessionid)만 쿠키로 들고 있다.
+
+# 6
+Q 세션 기반 로그인에서 브라우저가 쿠키로 보관하는 것은?
+1 sessionid (세션을 찾는 키)
+2 사용자의 비밀번호
+3 사용자 정보 전체
+4 django_session 테이블
+A 1
+E 쿠키 = 보관함 번호표, 세션 = 서버의 보관함.
+
+# 7
+Q 로그인 상태 유지 흐름을 순서대로 나열한 것은?
+```text
+가. 브라우저가 이후 요청마다 sessionid 쿠키를 함께 보낸다.
+나. 로그인 성공 시 서버가 세션을 생성해 DB에 저장한다.
+다. 서버가 sessionid로 세션을 찾아 request.user에 User 객체를 넣는다.
+라. 응답에 sessionid 쿠키를 담아 브라우저로 보낸다.
+```
+1 가 → 나 → 다 → 라
+2 나 → 라 → 가 → 다
+3 나 → 다 → 라 → 가
+4 라 → 나 → 가 → 다
+A 2
+E 세션 생성 → 쿠키 발급 → 브라우저가 매 요청에 첨부 → 서버가 세션 조회로 사용자 판별.
+
+# 8
+Q 인증(Authentication)과 인가(Authorization)에 대한 설명으로 **옳은** 것은?
+1 인증은 권한 확인, 인가는 본인 확인이다.
+2 둘은 같은 개념을 부르는 다른 이름이다.
+3 로그인에 성공하면 모든 데이터에 대한 인가가 자동으로 주어진다.
+4 인증은 '누구인가', 인가는 '무엇을 할 수 있는가'를 확인한다.
+A 4
+E 로그인 = 인증. 로그인했다고 남의 글을 수정할 권한(인가)까지 생기는 건 아니다.
+
+# 9
+Q 프로젝트 초기에 Custom User 모델을 만드는 이유로 가장 적절한 것은?
+1 기본 User 모델만으로는 로그인 기능을 구현할 수 없어서
+2 Custom User를 쓰면 비밀번호를 해싱할 필요가 없어져서
+3 나중에 유저 모델을 확장하기 쉽게 하려고
+4 Custom User를 쓰면 이후 migrate를 하지 않아도 되어서
+A 3
+E 기본 User는 필드가 정해져 있어 확장이 어렵다. 처음부터 내 User로 갈아 끼워 두는 것이 권장된다.
+
+# 10
+Q 기본 User의 필드와 기능을 그대로 유지하면서 Custom User를 만들 때 상속하는 클래스는?
+1 `models.Model`
+2 `AbstractBaseUser`
+3 `AbstractUser`
+4 `UserCreationForm`
+A 3
+E AbstractUser는 기본 User 기능 전체를 포함. AbstractBaseUser는 최소 기능만 있어 필드·매니저를 직접 설계해야 한다.
+
+# 11
+Q `AUTH_USER_MODEL = 'accounts.User'`에 대한 설명으로 **옳은** 것은?
+1 accounts는 앱 이름, User는 모델 클래스 이름이다.
+2 accounts는 모델 이름, User는 앱 이름이다.
+3 이 설정의 기본값이 'accounts.User'다.
+4 첫 migrate 이후에도 언제든 자유롭게 바꿔도 문제없다.
+A 1
+E 형식은 '앱이름.모델클래스명'. 기본값은 'auth.User'이며 첫 migrate 전에 설정해야 한다.
+
+# 12
+Q AUTH_USER_MODEL을 첫 migrate 전에 설정해야 하는 이유는?
+1 settings.py는 migrate 후 수정할 수 없어서
+2 첫 migrate 전에만 createsuperuser를 쓸 수 있어서
+3 migrate 후에는 accounts 앱을 만들 수 없어서
+4 중간에 바꾸면 테이블·외래키·migration 의존성이 꼬여 매우 복잡해져서
+A 4
+E 학습 환경에서는 db.sqlite3와 migration 파일을 지우고 다시 하는 식으로 초기화하지만, 운영 DB에서는 금지.
+
+# 13
+Q 로그인을 '세션' 관점에서 표현한 것으로 옳은 것은?
+1 User 객체를 Create
+2 세션을 Delete
+3 User 객체를 Update
+4 세션을 Create
+A 4
+E 로그인 = 세션 Create, 로그아웃 = 세션 Delete, 회원가입 = User Create.
+
+# 14
+Q AuthenticationForm에 대한 설명으로 **옳지 않은** 것은?
+1 로그인 입력을 받는 built-in Form이다.
+2 이미 있는 유저인지 확인하는 용도라 save()가 없다.
+3 ModelForm이라 save()로 로그인 세션을 만든다.
+4 생성자의 첫 번째 인자로 request를 받는다.
+A 3
+E AuthenticationForm은 ModelForm이 아니다. 세션은 auth_login()이 만든다.
+
+# 15
+Q 로그인 POST 처리에서 AuthenticationForm을 생성하는 코드로 옳은 것은?
+1 `AuthenticationForm(request, request.POST)`
+2 `AuthenticationForm(request.POST)`
+3 `AuthenticationForm(request.POST, request)`
+4 `AuthenticationForm(instance=request.user)`
+A 1
+E 생성자가 `__init__(self, request=None, *args, **kwargs)`. 첫 인자가 request, 그다음이 data.
+
+# 16
+Q `AuthenticationForm(request.POST)`로 잘못 작성했을 때 일어나는 일은?
+1 정상적으로 로그인되고 index로 redirect된다.
+2 request 인자가 없다는 TypeError가 나서 500 에러 페이지가 뜬다.
+3 "아이디나 비밀번호가 틀렸다"는 에러 메시지가 폼에 표시된다.
+4 unbound form이 되어 is_valid()가 항상 False다.
+A 4
+E 에러 메시지도 없이 로그인이 안 되는 게 특징이라 찾기 어렵다. 헷갈리면 `AuthenticationForm(request, data=request.POST)`.
+
+# 17
+Q 로그인 view에서 빈칸에 들어갈 코드는?
+```python
+if form.is_valid():
+    auth_login(request, _______)
+    return redirect('articles:index')
+```
+1 `form.save()`
+2 `request.user`
+3 `form.get_user()`
+4 `form.cleaned_data`
+A 3
+E get_user()는 is_valid()를 통과한 유저 객체를 반환한다. 반드시 is_valid() 다음에 호출.
+
+# 18
+Q `from django.contrib.auth import login as auth_login`처럼 별칭을 쓰는 이유는?
+1 view 이름도 login이라 view가 자기 자신을 호출하게 되어서
+2 auth_login이 login보다 세션을 더 빠르게 만들어 주어서
+3 Django 5.x부터 login이라는 이름이 deprecated되어서
+4 별칭을 써야 세션이 DB에 저장되기 때문에
+A 1
+E 같은 이름을 다시 정의하면 마지막 것만 남는다 → TypeError: login() takes 1 positional argument but 2 were given.
+
+# 19
+Q view에서 context로 넘기지 않았는데 템플릿에서 `{{ user.username }}`을 쓸 수 있는 이유는?
+1 AUTH_USER_MODEL 설정이 템플릿에 user를 자동으로 넣어 주어서
+2 login() 함수가 모든 템플릿 파일에 user 변수를 써 넣어서
+3 DTL이 렌더링할 때마다 DB에서 user를 직접 조회해서
+4 auth context processor가 모든 템플릿에 user를 넣어 줘서
+A 4
+E settings.py TEMPLATES의 context_processors에 `django.contrib.auth.context_processors.auth`가 기본 포함되어 있다.
+
+# 20
+Q 로그인하지 않은 상태에서 `request.user`의 값은?
+1 `None`
+2 `AnonymousUser`
+3 빈 User 객체(pk=0)
+4 에러 발생
+A 2
+E 그래서 템플릿에서 `Hello, {{ user.username }}`이 `Hello,`만 보인다.
+
+@@ 09
+# 1
+Q 로그아웃을 '세션' 관점에서 표현한 것은?
+1 세션 Create
+2 User 객체 Delete
+3 세션 Delete
+4 User 객체 Update
+A 3
+E 로그아웃은 세션만 지운다. User 객체 Delete는 회원 탈퇴.
+
+# 2
+Q `auth_logout(request)`가 하는 일로 **옳은** 것은?
+1 서버의 세션과 쿠키의 sessionid를 삭제한다.
+2 DB의 User 테이블에서 사용자 계정을 삭제한다.
+3 사용자의 비밀번호를 초기값으로 재설정한다.
+4 로그인하지 않은 상태에서 호출하면 에러가 발생한다.
+A 1
+E request.user도 AnonymousUser로 바뀐다. 비로그인 상태에서 호출해도 에러는 없다.
+
+# 3
+Q 로그인 링크는 `<a>`로, 로그아웃은 POST form으로 만드는 이유는?
+1 `<a>` 태그로는 accounts 앱 URL에 접근할 수 없어서
+2 로그아웃은 세션을 삭제하는, 서버 상태를 바꾸는 요청이라서
+3 로그인 페이지는 CSRF 공격 대상이 될 수 없어서
+4 form이 a 태그보다 빠르게 동작해서
+A 2
+E 로그인 링크는 "페이지를 보여달라"(GET, 상태 변화 없음), 로그아웃은 "세션을 지워달라"(POST + CSRF).
+
+# 4
+Q logout view가 POST 요청만 받도록 제한하는 데코레이터는?
+1 `@require_POST`
+2 `@login_required`
+3 `@csrf_exempt`
+4 `@post_only`
+A 1
+E `from django.views.decorators.http import require_POST`. GET으로 오면 405 응답.
+
+# 5
+Q 회원가입을 CRUD 관점에서 표현한 것은?
+1 세션 Create
+2 User 객체 Update
+3 세션 Delete
+4 User 객체 Create
+A 4
+E 회원가입 = DB에 User 레코드를 새로 만드는 일.
+
+# 6
+Q UserCreationForm에 대한 설명으로 **옳은** 것은?
+1 회원가입용 ModelForm이며, 비밀번호를 해시해 저장한다.
+2 로그인 확인용 Form이라 save() 메서드가 아예 없다.
+3 Custom User를 쓰는 프로젝트에서도 수정 없이 그대로 쓸 수 있다.
+4 생성자의 첫 번째 인자로 request 객체를 받는다.
+A 1
+E 입력 필드는 username, password1, password2. ②④는 AuthenticationForm 설명, ③은 Meta.model 문제로 불가.
+
+# 7
+Q Custom User를 쓰는 프로젝트에서 UserCreationForm을 상속해 재정의하는 이유는?
+1 비밀번호 입력 칸을 2개에서 3개로 늘려야 해서
+2 Meta.model이 기본 auth.User로 고정되어 있어서
+3 UserCreationForm에는 is_valid() 메서드가 없어서
+4 상속해야 회원가입 직후 자동으로 로그인되어서
+A 2
+E AUTH_USER_MODEL을 accounts.User로 바꿨으니 폼도 그 모델을 가리켜야 한다.
+
+# 8
+Q 다음 CustomUserCreationForm의 빈칸으로 가장 적절한 것은?
+```python
+class CustomUserCreationForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = _______
+```
+1 `User`
+2 `get_user_model()`
+3 `'auth.User'`
+4 `settings.AUTH_USER_MODEL`
+A 2
+E Meta.model에는 모델 **클래스**가 와야 한다. get_user_model()은 현재 유저 모델 클래스를 반환하고, settings.AUTH_USER_MODEL은 'accounts.User'라는 **문자열**이라 여기엔 맞지 않다.
+
+# 9
+Q `get_user_model()`에 대한 설명으로 **옳은** 것은?
+1 설정과 관계없이 항상 Django 기본 auth.User를 반환한다.
+2 현재 요청을 보낸 로그인 사용자 객체를 반환한다.
+3 AUTH_USER_MODEL에 지정된 유저 모델 클래스를 반환한다.
+4 새로운 유저 객체를 생성해 DB에 저장하고 반환한다.
+A 3
+E 객체(인스턴스)가 아니라 모델 **클래스**를 반환한다. 현재 로그인한 사용자는 request.user.
+
+# 10
+Q `class Meta(UserCreationForm.Meta):`처럼 부모 Meta를 상속하는 이유는?
+1 Meta를 상속해야 ModelForm 기능이 동작해서
+2 부모의 fields 설정은 두고 model만 바꾸려고
+3 부모 Meta에 정의된 model을 그대로 쓰기 위해
+4 Meta는 반드시 부모를 상속받아야 문법 오류가 나지 않아서
+A 2
+E `class Meta:`로만 쓰면 부모 설정이 사라진다.
+
+# 11
+Q 회원가입 직후 자동으로 로그인되게 하려면?
+1 `form.save()`만 호출해도 저장과 동시에 자동으로 로그인된다.
+2 `form.save(commit=False)`로 저장을 미루면 로그인 세션이 생긴다.
+3 가입 후 `redirect('accounts:login')`으로 보내면 자동 로그인된다.
+4 save()가 돌려준 user로 auth_login()을 호출한다.
+A 4
+E save()는 유저를 만들기만 한다. 로그인은 save()가 돌려준 user로 auth_login을 따로 호출해야 한다.
+
+# 12
+Q 회원 탈퇴 view에서 계정을 삭제하는 코드는?
+1 `auth_logout(request)`
+2 `User.objects.all().delete()`
+3 `request.user.save()`
+4 `request.user.delete()`
+A 4
+E request.user = 지금 요청을 보낸 로그인 사용자. 탈퇴 대상이 항상 "나"라서 URL에 pk가 필요 없다.
+
+# 13
+Q 로그아웃과 회원 탈퇴의 차이로 **옳은** 것은?
+1 둘 다 세션을 지우고 DB에서 User 계정도 삭제한다.
+2 로그아웃은 User를 삭제하고, 탈퇴는 세션만 삭제한다.
+3 로그아웃은 세션만 끊고, 탈퇴는 User를 삭제한다.
+4 둘 다 세션만 삭제하므로 DB의 User는 그대로 남는다.
+A 3
+E auth_logout ≠ request.user.delete().
+
+# 14
+Q 다음처럼 탈퇴 view에서 로그아웃을 **먼저** 하면 생기는 문제는?
+```python
+def delete(request):
+    auth_logout(request)
+    request.user.delete()
+    return redirect('articles:index')
+```
+1 request.user가 AnonymousUser가 돼 대상을 잃는다.
+2 세션을 두 번 지우게 되어 KeyError가 발생한다.
+3 로그아웃 직후 CSRF 토큰이 무효가 되어 403이 발생한다.
+4 순서와 무관하게 계정 삭제와 로그아웃이 정상 처리된다.
+A 1
+E 강의 순서는 삭제 → 로그아웃. 순서를 바꾸려면 `user = request.user`로 미리 잡아 둔다.
+
+# 15
+Q `is_authenticated`에 대한 설명으로 **옳은** 것은?
+1 User 객체의 속성이라 괄호 없이 `request.user.is_authenticated`로 쓴다.
+2 메서드이므로 `request.user.is_authenticated()`로 호출해야 한다.
+3 view 함수 위에 붙이는 데코레이터다.
+4 로그인하지 않은 사용자(AnonymousUser)에서는 True다.
+A 1
+E User는 True, AnonymousUser는 False. 데코레이터는 login_required.
+
+# 16
+Q 템플릿에서 로그인한 사용자에게만 로그아웃 버튼을 보여주는 조건은?
+1 `{% if request.user.is_superuser %}`
+2 `{% if request.user.is_login %}`
+3 `{% if request.user.is_authenticated %}`
+4 `{% if request.user.is_authenticated() %}`
+A 3
+E is_authenticated는 속성이라 괄호 없이 쓴다(DTL에선 괄호 호출 자체가 문법 오류). is_superuser는 관리자 여부, is_login이라는 속성은 없다.
+
+# 17
+Q 이미 로그인한 사용자가 login, signup 페이지에 다시 들어오지 못하게 하는 view 코드는?
+1 login view에 `@login_required`를 붙인다.
+2 `if not request.user.is_authenticated: return redirect('articles:index')`
+3 `if request.user.is_authenticated: return redirect('articles:index')`
+4 `if request.method == 'GET': return redirect('accounts:login')`
+A 3
+E 로그인 상태(True)면 메인으로 돌려보낸다. ①은 비로그인 사용자를 로그인 페이지에 못 들어가게 만드는 꼴.
+
+# 18
+Q `@login_required`에 대한 설명으로 **옳지 않은** 것은?
+1 인증된 사용자에 대해서만 view 함수를 실행한다.
+2 비로그인 사용자는 로그인 페이지(기본 /accounts/login/)로 redirect된다.
+3 redirect 시 원래 가려던 주소가 next 파라미터로 붙을 수 있다.
+4 붙이면 해당 게시글의 작성자인지까지 자동으로 확인해 준다.
+A 4
+E login_required는 로그인 여부만 본다. 소유권(인가) 검사는 별도 로직이 필요하다.
+
+# 19
+Q 템플릿에서 [NEW] 버튼만 숨기고 create view에는 아무 처리도 하지 않았을 때의 문제는?
+1 버튼이 숨겨져 로그인한 사용자도 글을 쓸 수 없게 된다.
+2 비로그인 사용자도 URL을 직접 입력해 접근할 수 있다.
+3 템플릿 분기 때문에 CSRF 토큰이 생성되지 않는다.
+4 if 태그 안에서는 user 변수를 쓸 수 없어 에러가 난다.
+A 2
+E 화면 분기는 접근 제한이 아니다. view에 @login_required를 함께 붙여야 한다.
+
+# 20
+Q AuthenticationForm과 UserCreationForm의 비교로 **옳지 않은** 것은?
+1 AuthenticationForm은 로그인용, UserCreationForm은 회원가입용이다.
+2 AuthenticationForm은 Form, UserCreationForm은 ModelForm이다.
+3 AuthenticationForm은 첫 인자로 request를, UserCreationForm은 data를 받는다.
+4 두 폼 모두 save()로 새 User를 DB에 저장한다.
+A 4
+E AuthenticationForm에는 save()가 없다. 로그인은 기존 유저 확인 + auth_login.
+
+@@ 10
+# 1
+Q 회원정보 수정에 사용하는 Django 내장 폼은?
+1 `AuthenticationForm`
+2 `UserCreationForm`
+3 `PasswordChangeForm`
+4 `UserChangeForm`
+A 4
+E UserChangeForm은 회원정보 수정용 built-in ModelForm. 강의 확인문제 1번.
+
+# 2
+Q CustomUserChangeForm에서 Meta.fields를 지정해야 하는 이유로 가장 적절한 것은?
+1 fields를 지정하지 않으면 폼이 화면에 렌더링되지 않아서
+2 fields를 지정해야 저장할 때 비밀번호가 해시되어서
+3 fields가 없으면 instance=request.user를 쓸 수 없어서
+4 is_superuser 같은 관리자용 필드까지 노출되어서
+A 4
+E 사용자가 고쳐도 되는 필드(예: first_name, last_name, email)만 명시한다.
+
+# 3
+Q 회원정보 수정(POST)에서 폼을 생성하는 코드로 옳은 것은?
+1 `CustomUserChangeForm(request.POST, instance=request.user)`
+2 `CustomUserChangeForm(request, request.POST)`
+3 `CustomUserChangeForm(request.POST, user=request.user)`
+4 `CustomUserChangeForm(data=request.user, instance=request.POST)`
+A 1
+E ModelForm이라 첫 인자는 data(request.POST), 수정 대상은 instance=request.user. ④는 둘을 뒤바꿨다. GET일 땐 instance만.
+
+# 4
+Q 회원정보 수정 view에서 `instance=request.user`를 넣는 이유로 **옳지 않은** 것은?
+1 GET에서 기존 사용자 정보를 폼에 미리 채우기 위해
+2 POST에서 save() 시 새 User가 아니라 기존 User를 수정하기 위해
+3 instance를 넣으면 유효성 검사 없이 바로 저장되기 때문에
+4 수정 대상을 현재 로그인한 사용자로 고정하기 위해
+A 3
+E instance는 수정 대상을 지정할 뿐이다. 검증(is_valid)과 저장(save)은 그대로 거쳐야 한다.
+
+# 5
+Q 회원정보 수정 URL(`accounts/update/`)에 pk가 없어도 되는 이유는?
+1 Django가 URL 끝에 pk를 자동으로 붙여 주기 때문에
+2 회원정보 수정은 POST 없이 GET 요청만 사용해서
+3 User 모델에는 기본키(pk) 필드가 존재하지 않아서
+4 수정 대상이 항상 request.user라서
+A 4
+E 이미 들고 있는 request.user를 그대로 쓰면 된다. 다시 조회할 필요도 없다.
+
+# 6
+Q PasswordChangeForm에 대한 설명으로 **옳은** 것은?
+1 기존 비밀번호 확인이 포함된 비밀번호 변경용 Form이다.
+2 ModelForm이므로 첫 번째 인자로 data(request.POST)를 받는다.
+3 기존 비밀번호를 몰라도 새 비밀번호만 입력하면 변경된다.
+4 회원가입 시 입력한 비밀번호를 해시해 저장하는 폼이다.
+A 1
+E SetPasswordForm을 상속하고 기존 비밀번호 확인(old_password)을 추가한 Form. 첫 인자는 user.
+
+# 7
+Q 비밀번호 변경(POST)에서 폼을 생성하는 코드로 옳은 것은?
+1 `PasswordChangeForm(request.POST)`
+2 `PasswordChangeForm(request, request.POST)`
+3 `PasswordChangeForm(request.POST, instance=request.user)`
+4 `PasswordChangeForm(request.user, request.POST)`
+A 4
+E 생성자가 `__init__(self, user, *args, **kwargs)`. 기존 비밀번호 확인·새 비밀번호 저장의 대상이 user다.
+
+# 8
+Q 비밀번호 변경 후 아무 처리도 하지 않으면 로그아웃되는 이유는?
+1 세션에 저장된 인증 해시가 바뀐 비밀번호와 맞지 않아 세션이 무효 처리되어서
+2 PasswordChangeForm.save()가 내부적으로 logout()을 호출해서
+3 비밀번호가 바뀌면 User 객체가 삭제되었다가 다시 생성되어서
+4 브라우저가 비밀번호 변경을 감지해 쿠키를 지워서
+A 1
+E Django는 세션에 비밀번호 기반 해시를 함께 저장해 두고 요청마다 비교한다.
+
+# 9
+Q 비밀번호 변경 후 현재 세션의 로그인을 유지하기 위해 Django가 제공하는 함수로, 빈칸에 들어갈 코드는?
+```python
+if form.is_valid():
+    user = form.save()
+    _______
+    return redirect('articles:index')
+```
+1 `auth_logout(request)`
+2 `request.session.flush()`
+3 `update_session_auth_user(request, user)`
+4 `update_session_auth_hash(request, user)`
+A 4
+E 새 비밀번호 기준으로 현재 세션의 인증 해시를 갱신한다. 비슷한 이름(③)에 주의. 강의 확인문제 4번.
+
+# 10
+Q 인증 관련 폼과 생성자 **첫 번째 인자**의 연결로 **옳지 않은** 것은?
+1 AuthenticationForm — request
+2 PasswordChangeForm — request
+3 UserCreationForm — data
+4 UserChangeForm — data
+A 2
+E PasswordChangeForm은 user가 먼저. "AuthenticationForm은 요청(request), PasswordChangeForm은 사람(user)".
+
+# 11
+Q 비밀번호를 저장할 때 해싱을 사용하는 이유로 가장 적절한 것은?
+1 키만 있으면 언제든 원래 비밀번호로 복호화할 수 있어서
+2 Base64처럼 규칙만 알면 누구나 되돌릴 수 있어서
+3 역연산이 어려워 유출돼도 원문을 바로 알 수 없어서
+4 해시값의 길이가 비밀번호 길이에 따라 달라져 추측이 어려워서
+A 3
+E 로그인 때는 입력값을 똑같이 해싱해 해시끼리 비교하면 되므로 원문을 보관할 필요가 없다.
+
+# 12
+Q 인코딩·암호화·해싱에 대한 설명으로 **옳은** 것은?
+1 인코딩은 키가 있어야만 원래대로 복원할 수 있다.
+2 암호화는 키를 사용하며, 올바른 키로 복호화할 수 있다.
+3 해싱은 키를 사용해 언제든 원문으로 되돌릴 수 있다.
+4 Base64는 비밀번호 보호에 적합한 암호화 방식이다.
+A 2
+E 인코딩(UTF-8, Base64)은 규칙만 알면 복원, 암호화(AES)는 키로 복호화, 해싱(SHA-256)은 원칙적으로 역연산 불가.
+
+# 13
+Q 암호학적 해시 함수의 특징이 **아닌** 것은?
+1 같은 입력은 항상 같은 출력을 낸다.
+2 해시값으로 원래 입력값을 쉽게 알아낼 수 있다.
+3 입력이 조금만 달라져도 출력이 크게 달라진다.
+4 입력 길이와 상관없이 출력 길이가 고정된다.
+A 2
+E 결정성·일방향성·눈사태 효과·고정 길이. 강의 확인문제 6번.
+
+# 14
+Q SHA-256 해시값을 16진수로 표현했을 때의 길이는?
+1 32자리
+2 128자리
+3 64자리
+4 256자리
+A 3
+E 256비트 = 32바이트, 16진수 한 자리는 4비트 → 256 ÷ 4 = 64자리.
+
+# 15
+Q 레인보우 테이블 공격을 무력화하는 데 핵심적인 기술은?
+1 Key Stretching
+2 CAPTCHA
+3 Salt
+4 Base64 인코딩
+A 3
+E 사용자마다 다른 Salt를 붙이면 미리 계산해 둔 해시표가 쓸모없어진다. 강의 확인문제 7번.
+
+# 16
+Q Salt에 대한 설명으로 **옳은** 것은?
+1 반드시 비밀로 숨겨야 하므로 DB에는 저장하면 안 된다.
+2 사용자마다 달라서 같은 비밀번호도 해시가 달라진다.
+3 해시 연산을 수천 번 반복해 계산 비용을 늘리는 기술이다.
+4 Salt만 있으면 무차별 대입 공격도 완전히 막을 수 있다.
+A 2
+E Salt는 비밀이 아니라 해시와 함께 저장된다. ③은 Key Stretching. 무차별 대입 방어는 Key Stretching의 몫.
+
+# 17
+Q 무차별 대입(Brute-force) 공격의 효율을 낮추기 위해 해시 연산을 의도적으로 많이 반복하는 기술은?
+1 Salt
+2 Key Stretching
+3 Encoding
+4 Rainbow Table
+A 2
+E 후보 하나를 검사하는 비용을 크게 늘린다. 강의 확인문제 8번.
+
+# 18
+Q 강의 기준 Django의 기본 비밀번호 해싱 알고리즘은?
+1 `PBKDF2`
+2 `MD5`
+3 `Base64`
+4 `AES`
+A 1
+E PBKDF2 + SHA-256(저장 문자열 접두사 pbkdf2_sha256). Salt와 반복(키 스트레칭)을 모두 적용한다. 강의 확인문제 9번.
+
+# 19
+Q Django DB의 password 값 `pbkdf2_sha256$...$...$...`의 구성 요소가 **아닌** 것은?
+1 username
+2 iterations (반복 횟수)
+3 salt
+4 hash
+A 1
+E 형식은 algorithm$iterations$salt$hash. 사용자 식별값은 다른 필드에 있다. 강의 확인문제 10번.
+
+# 20
+Q 비밀번호 초기화 메일을 실제로 보내지 않고 개발 서버 콘솔에 출력하려 한다. 빈칸에 들어갈 설정 항목은?
+```python
+# settings.py
+_______ = 'django.core.mail.backends.console.EmailBackend'
+```
+1 `EMAIL_HOST`
+2 `AUTH_PASSWORD_VALIDATORS`
+3 `EMAIL_BACKEND`
+4 `DEBUG_EMAIL`
+A 3
+E EMAIL_BACKEND를 console 백엔드로 지정하면 메일 내용이 runserver 터미널에 출력된다. AUTH_PASSWORD_VALIDATORS는 비밀번호 품질 검사 설정. 강의 확인문제 11번.

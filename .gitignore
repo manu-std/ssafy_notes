@@ -39,3 +39,6 @@ AI_python/시험대비/RAG/data/
 **/__pycache__/
 **/chroma_db/
 **/.chroma/
+
+### Django CBT 빌드 중간 산출물 (커밋 제외)
+django/cbt_web/questions.json

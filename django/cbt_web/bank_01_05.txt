@@ -1,0 +1,965 @@
+@@ 01
+# 1
+Q 클라이언트-서버 구조에 대한 설명으로 **옳은** 것은?
+1 클라이언트는 서비스를 요청하고, 서버는 그 요청을 처리해 응답한다.
+2 서버가 먼저 클라이언트에 요청을 보내야 통신이 시작된다.
+3 웹 브라우저는 대표적인 서버 프로그램이다.
+4 클라이언트와 서버는 반드시 같은 컴퓨터 안에서 동작해야 한다.
+A 1
+E 요청을 보내는 쪽이 클라이언트(브라우저·앱), 요청을 받아 처리하고 응답하는 쪽이 서버다. 서로 다른 두 컴퓨터가 인터넷으로 데이터를 주고받는 구조.
+
+# 2
+Q 웹 프레임워크를 사용하는 주된 목적으로 가장 적절한 것은?
+1 작성한 Python 코드를 기계어로 컴파일하기 위해
+2 데이터베이스 없이 웹 서비스를 운영하기 위해
+3 브라우저마다 다른 HTML을 자동으로 만들기 위해
+4 웹 개발에 필요한 코드를 줄이고 구조화를 돕기 위해
+A 4
+E 프레임워크는 기본 구조·규칙·라이브러리를 제공해 반복 코드를 줄이고 구조화를 돕는다. 컴파일러가 아니다.
+
+# 3
+Q Django에 대한 설명으로 **옳지 않은** 것은?
+1 Python 기반의 웹 프레임워크다.
+2 MTV 디자인 패턴을 기반으로 한다.
+3 ORM과 보안 기능을 기본으로 제공한다.
+4 고정된 HTML 템플릿만 사용할 수 있다.
+A 4
+E Django는 다양한 템플릿 엔진을 쓸 수 있고 동적 데이터를 템플릿에 넘길 수 있다. "고정된 HTML만"은 강의 확인문제의 대표 오답.
+
+# 4
+Q 가상 환경을 사용하는 이유로 가장 적절한 것은?
+1 프로젝트마다 독립적인 파이썬 패키지를 관리하기 위해
+2 컴퓨터의 CPU와 메모리를 프로젝트별로 나누기 위해
+3 Python 코드의 실행 속도를 높이기 위해
+4 Git 저장소의 용량을 늘리기 위해
+A 1
+E 가상 환경은 프로젝트별로 패키지·버전을 격리해 의존성 충돌을 막는다. CPU·RAM을 나누는 가상머신(VM)과는 다르다.
+
+# 5
+Q `venv`라는 이름의 가상 환경을 **생성**하는 명령어는?
+1 `pip install venv`
+2 `python -m venv venv`
+3 `python install venv`
+4 `django-admin venv create`
+A 2
+E `python -m venv 환경이름` 형식. 나머지는 강의 확인문제에 나온 오답 보기들이다.
+
+# 6
+Q 가상 환경에 대한 설명으로 **옳은** 것은?
+1 활성화는 현재 터미널에만 적용되므로, 새 터미널을 열면 다시 활성화해야 한다.
+2 한 번 활성화하면 컴퓨터를 재시작해도 계속 유지된다.
+3 venv 폴더는 팀원과 공유하기 위해 원격 저장소에 올린다.
+4 `python -m venv venv` 한 번으로 생성과 활성화가 함께 이루어진다.
+A 1
+E 활성화는 현재 터미널에만 영향. venv 폴더는 .gitignore로 제외하고 requirements.txt를 공유한다. 생성과 활성화는 별도 단계.
+
+# 7
+Q 현재 가상 환경에 설치된 패키지 목록과 버전을 **파일로 기록**하는 명령어는?
+1 `pip list requirements.txt`
+2 `pip install -r requirements.txt`
+3 `pip freeze > requirements.txt`
+4 `pip save requirements.txt`
+A 3
+E freeze = 기록(내보내기), `install -r` = 파일대로 설치(가져오기). 둘의 방향을 헷갈리지 말 것.
+
+# 8
+Q 다음 명령어에 대한 설명으로 **옳지 않은** 것은?
+```bash
+pip freeze > requirements.txt
+pip install -r requirements.txt
+```
+1 `>`는 pip의 옵션이 아니라 셸(CLI)의 리다이렉션 연산자다.
+2 `>`로 다시 기록하면 기존 파일 내용을 덮어쓴다.
+3 `-r`은 파일을 읽어 그 안의 패키지를 모두 설치하라는 옵션이다.
+4 `pip freeze`는 프로젝트에서 import한 패키지만 기록한다.
+A 4
+E freeze는 그 시점에 설치된 패키지 **전부**를 기록한다. 실제로 import한 것만 골라주는 기능은 없다.
+
+# 9
+Q `django-admin startproject firstpjt .` 에서 마지막 `.`의 의미는?
+1 프로젝트 이름을 생략한다는 의미
+2 상위 폴더에 프로젝트를 만든다는 의미
+3 현재 위치(디렉토리)에 프로젝트를 만든다는 의미
+4 최신 버전의 Django를 사용한다는 의미
+A 3
+E `.`은 현재 디렉토리. 현재 위치에 firstpjt 설정 폴더와 manage.py가 만들어진다.
+
+# 10
+Q Django 개발 서버를 실행하는 명령어와 실행 위치로 옳은 것은?
+1 `python manage.py runserver` — manage.py가 있는 위치
+2 `django-admin runserver` — 아무 위치
+3 `python manage.py startserver` — settings.py가 있는 위치
+4 `python runserver.py` — 가상 환경 폴더 안
+A 1
+E runserver는 manage.py와 같은 위치에서 실행한다. 기본 주소는 http://127.0.0.1:8000/ (개발용 서버).
+
+# 11
+Q 디자인 패턴에 대한 설명으로 가장 적절한 것은?
+1 주어진 문제를 가장 빠르게 해결하는 단계별 계산 절차
+2 반복되는 설계 문제에 대한 검증된 재사용 가능한 해결책
+3 웹 개발에 필요한 기본 구조·도구·라이브러리를 묶은 것
+4 작성한 소스 코드를 실행 파일로 변환하는 규칙
+A 2
+E ①은 알고리즘, ③은 프레임워크에 가까운 설명. 디자인 패턴은 "구조는 이렇게 짜자"는 모범 답안·관행이다.
+
+# 12
+Q MVC 패턴과 Django MTV 패턴의 대응으로 **옳은** 것은?
+1 MVC의 View ↔ MTV의 View
+2 MVC의 Controller ↔ MTV의 Template
+3 MVC의 Model ↔ MTV의 View
+4 MVC의 Controller ↔ MTV의 View
+A 4
+E Model↔Model, MVC View↔Template, MVC Controller↔View. 이름이 같은 View끼리 대응하지 않는다는 게 함정.
+
+# 13
+Q Django MTV 각 구성 요소의 역할로 **옳지 않은** 것은?
+1 Model — 데이터 구조를 정의하고 DB 기록을 관리한다.
+2 Template — 화면의 레이아웃과 사용자 인터페이스 구조를 정의한다.
+3 View — 요청을 처리하고 Model·Template을 이용해 응답을 반환한다.
+4 View — 사용자에게 보여질 HTML 화면 그 자체를 의미한다.
+A 4
+E Django의 View는 요청을 처리하는 Python 함수/클래스다. 화면(HTML)은 Template이 담당한다.
+
+# 14
+Q Django 공식 FAQ 기준으로, MVC의 'Controller'에 해당하는 것은?
+1 요청을 알맞은 View로 보내는 프레임워크 자체
+2 사용자에게 보여줄 화면을 그리는 Template
+3 데이터 구조를 정의하고 DB를 다루는 Model
+4 데이터를 웹에서 직접 관리하는 관리자 페이지(admin)
+A 1
+E FAQ: View는 "어떤 데이터를 보여줄지", Template은 "어떻게 보일지", Controller 역할은 URL 설정에 따라 요청을 전달하는 프레임워크 자체.
+
+# 15
+Q Django 프로젝트와 앱에 대한 설명으로 **옳은** 것은?
+1 앱은 여러 개의 프로젝트를 포함하는 상위 단위다.
+2 프로젝트는 앱의 집합이며, 앱은 독립적으로 작동하는 기능 단위 모듈이다.
+3 하나의 프로젝트에는 하나의 앱만 만들 수 있다.
+4 DB 설정과 URL 연결은 각 앱의 apps.py에서만 처리한다.
+A 2
+E 프로젝트 = 앱들의 집합(DB 설정, URL 연결, 전체 설정). 앱 = 게시판·회원 같은 기능 단위. 한 프로젝트에 여러 앱을 둘 수 있다.
+
+# 16
+Q `python manage.py startapp articles` 실행 후, Django가 이 앱을 인식하게 하려면?
+1 articles 폴더를 firstpjt 설정 폴더 안으로 옮겨 넣는다.
+2 프로젝트 urls.py 맨 위에 `import articles`를 추가한다.
+3 settings.py의 INSTALLED_APPS에 앱 이름을 추가한다.
+4 별도 작업은 필요 없다. startapp이 자동으로 등록한다.
+A 3
+E startapp은 앱 파일을 만들기만 한다. INSTALLED_APPS 등록은 직접 해야 하며, 순서는 "생성 → 등록".
+
+# 17
+Q 앱 폴더의 파일과 역할의 연결로 **옳지 않은** 것은?
+1 models.py — 데이터 모델 정의
+2 admin.py — 요청을 처리하고 응답을 생성
+3 migrations/ — DB 스키마 변경 이력 저장
+4 tests.py — 테스트 코드 작성
+A 2
+E 요청 처리·응답 생성은 views.py. admin.py는 관리자 사이트 설정(모델 등록)용이다.
+
+# 18
+Q Django 요청-응답에서 데이터 흐름(=권장 코드 작성 순서)으로 옳은 것은?
+1 Template → View → URLs
+2 URLs → View → Template
+3 View → URLs → Template
+4 Model → Template → URLs
+A 2
+E 요청이 urls.py에서 view로, view가 template을 렌더링해 응답. 코드도 이 흐름대로 URLs → View → Template 순으로 작성한다.
+
+# 19
+Q articles 앱의 다음 view에 대한 설명으로 **옳은** 것은?
+```python
+def index(request):
+    return render(request, 'articles/index.html')
+```
+1 템플릿 파일은 프로젝트 최상위의 `articles/index.html`에 있어야 한다.
+2 render()는 렌더링된 HTML 문자열(str)을 반환한다.
+3 템플릿의 실제 위치는 `articles/templates/articles/index.html`이다.
+4 view 함수의 첫 번째 인자(request)는 생략할 수 있다.
+A 3
+E Django는 `app폴더/templates/`까지를 기본 경로로 보고 그 뒤 경로만 적는다. render()는 HttpResponse를 반환하고, view의 첫 인자 request는 필수.
+
+# 20
+Q 후행 쉼표(trailing comma)에 대한 설명으로 **옳지 않은** 것은?
+1 리스트·튜플 등에서 마지막 요소 뒤에 붙이는 쉼표다.
+2 `(1,)`처럼 요소가 하나인 튜플을 만들 때는 필수다.
+3 `['a', 'b',]`처럼 한 줄에 몰아 쓰는 방식이 권장된다.
+4 새 요소를 추가하거나 순서를 바꿀 때 수정할 줄이 줄어든다.
+A 3
+E 권장 패턴은 값마다 줄을 나누고 쉼표를 붙인 뒤 닫는 괄호를 다음 줄에 두는 것. 같은 줄에 두는 건 권장하지 않는다.
+
+@@ 02
+# 1
+Q Django Template System의 주요 목적은?
+1 HTML과 Python 코드를 분리해 작성하기 위해
+2 모델 정의를 읽어 데이터베이스 테이블을 만들기 위해
+3 로그인한 사용자를 확인하는 인증 처리를 위해
+4 startproject처럼 프로젝트 폴더 구조를 만들기 위해
+A 1
+E 템플릿은 표현(화면)을, View는 로직을 맡도록 분리한다. 강의 확인문제 1번.
+
+# 2
+Q DTL 문법과 용도의 연결로 **옳지 않은** 것은?
+1 `{{ name }}` — 변수 값 출력
+2 `{{ name|upper }}` — 출력 값 변형(필터)
+3 `{% for x in items %}` — 반복 같은 로직 처리(태그)
+4 `{# ... #}` — 여러 줄 주석 처리
+A 4
+E `{# #}`는 한 줄 주석. 여러 줄 주석은 `{% comment %} ... {% endcomment %}`.
+
+# 3
+Q view에서 `context = {'numbers': [10, 20, 30]}`를 넘겼다. 템플릿에서 `{{ numbers.1 }}`의 출력은?
+1 20
+2 10
+3 [10, 20, 30]
+4 에러 발생 (DTL에서는 인덱스로 접근할 수 없다)
+A 1
+E DTL은 인덱스·속성·딕셔너리 키를 모두 점(.)으로 접근한다. `numbers.1`은 두 번째 요소.
+
+# 4
+Q 앱 폴더 밖, 프로젝트 최상위의 `templates/` 폴더를 추가 템플릿 경로로 등록하는 설정은?
+1 `STATICFILES_DIRS` 리스트에 경로 추가
+2 `MEDIA_ROOT`에 templates 경로 지정
+3 `TEMPLATE_PATH` 문자열에 경로 지정
+4 `TEMPLATES` 설정 안의 `DIRS`
+A 4
+E `'DIRS': [BASE_DIR / 'templates']`. STATICFILES_DIRS는 정적 파일용(7단원), TEMPLATE_PATH라는 설정은 없다.
+
+# 5
+Q 상위(부모) 템플릿을 상속받을 때 사용하는 태그는?
+1 `{% include %}`
+2 `{% import %}`
+3 `{% extends %}`
+4 `{% template %}`
+A 3
+E 자식 템플릿 최상단에 `{% extends 'articles/base.html' %}`. 강의 확인문제 3번.
+
+# 6
+Q 템플릿 상속에 대한 설명으로 **옳지 않은** 것은?
+1 extends 태그는 자식 템플릿의 최상단에 작성한다.
+2 하나의 템플릿에서 extends 태그는 한 번만 쓸 수 있다.
+3 자식은 부모와 같은 이름의 block을 재정의해 그 영역의 내용을 채운다.
+4 endblock 뒤에 블록 이름을 반드시 적어야 오류가 나지 않는다.
+A 4
+E `{% endblock content %}`처럼 이름을 적는 건 가독성을 위한 선택 사항이다.
+
+# 7
+Q `<form>` 태그의 `action` 속성을 생략했을 때 데이터가 전송되는 곳은?
+1 사이트 루트 주소(`/`)
+2 직전에 방문했던 이전 페이지
+3 base.html 템플릿이 있는 위치
+4 현재 페이지의 URL
+A 4
+E action 생략 = 현재 페이지로 전송. `action="/"`(사이트 루트)와 구분할 것.
+
+# 8
+Q HTML form 제출 시 서버가 사용자 입력값을 찾는 key로 쓰이는 input 속성은?
+1 `name`
+2 `id`
+3 `type`
+4 `value`
+A 1
+E 서버는 name 속성 값으로만 입력 데이터에 접근한다. id는 label과 연결하는 HTML 식별자일 뿐.
+
+# 9
+Q 다음 form에 hello를 입력해 제출했을 때 요청 URL은?
+```html
+<form action="/catch/" method="GET">
+  <input type="text" name="message">
+  <input type="submit">
+</form>
+```
+1 `/catch/hello/`
+2 `/catch/?message=hello`
+3 `/catch/#message=hello`
+4 `/catch/?hello=message`
+A 2
+E GET은 입력값을 쿼리 스트링으로 보낸다. 기본 URL과 `?`로 구분하고 `name=값` 형태.
+
+# 10
+Q 위 요청을 받은 catch view에서 입력값을 꺼내는 코드로 옳은 것은?
+1 `request.POST.get('message')`
+2 `request.message`
+3 `request.GET.get('message')`
+4 `request.GET.get('hello')`
+A 3
+E GET으로 온 데이터는 `request.GET`(QueryDict)에 담기고, key는 input의 name인 `'message'`.
+
+# 11
+Q `message` 키가 **없을 때** `request.GET.get('message')`와 `request.GET['message']`의 동작으로 옳은 것은?
+1 둘 다 None을 반환한다.
+2 get()은 None을 반환하고, 대괄호 방식은 예외가 발생한다.
+3 get()은 예외가 발생하고, 대괄호 방식은 None을 반환한다.
+4 둘 다 빈 문자열을 반환한다.
+A 2
+E 딕셔너리와 같다. `.get()`은 기본값 None, `['key']`는 MultiValueDictKeyError.
+
+# 12
+Q `/articles/10/` 요청에서 10을 **정수**로 받아 detail view에 넘기는 URL 패턴은?
+1 `path('articles/<int:num>/', views.detail)`
+2 `path('articles/{num}/', views.detail)`
+3 `path('articles/:num/', views.detail)`
+4 `path('articles/<num:int>/', views.detail)`
+A 1
+E 형식은 `<path_converter:variable_name>`. 순서가 바뀐 ④와 다른 프레임워크 문법(②③)은 오답.
+
+# 13
+Q 다음 URL 패턴에 연결할 view 함수 선언부로 옳은 것은?
+```python
+path('hello/<str:name>/', views.greeting)
+```
+1 `def greeting(request, username):`
+2 `def greeting(request, name):`
+3 `def greeting(name):`
+4 `def greeting(request, str):`
+A 2
+E URL 변수명과 view 매개변수 이름이 같아야 한다(키워드 인자로 전달). 첫 인자 request도 필수.
+
+# 14
+Q Django가 기본 제공하는 path converter가 **아닌** 것은?
+1 `str`
+2 `float`
+3 `slug`
+4 `uuid`
+A 2
+E 기본 5가지: str, int, slug, uuid, path. float는 없다.
+
+# 15
+Q `include()`에 대한 설명으로 **옳은** 것은?
+1 HTML 템플릿에서 다른 템플릿을 불러와 상속받는 함수다.
+2 앱의 views 모듈 전체를 프로젝트로 import하는 함수다.
+3 일치한 부분까지 잘라내고 나머지를 앱 URL로 넘긴다.
+4 앱 urls.py에서 상위 프로젝트 urls.py를 불러올 때 쓴다.
+A 3
+E 프로젝트 urls.py에서 `include('articles.urls')`로 앱 URL에 나머지 처리를 위임한다. 템플릿 상속(extends)과는 무관.
+
+# 16
+Q 프로젝트 urls.py에 `path('articles/', include('articles.urls'))`가 있을 때, articles/urls.py의 `path('', views.index)`가 처리하는 요청 URL은?
+1 `/`
+2 `/index/`
+3 `/articles/articles/`
+4 `/articles/`
+A 4
+E include가 `articles/`를 잘라낸 뒤 남은 빈 문자열이 `''`와 매칭된다. 즉 `''`는 `/articles/` 자체.
+
+# 17
+Q 프로젝트에 `path('articles/', include('articles.urls'))`가 있는데, 앱 urls.py에도 `path('articles/', views.index)`라고 쓰면 index의 최종 URL은?
+1 `/articles/articles/`
+2 `/articles/`
+3 `/articles/index/`
+4 에러가 나서 서버가 실행되지 않는다.
+A 1
+E 프로젝트 prefix + 앱 경로가 이어 붙는다. 앱 쪽에 prefix를 또 쓰면 중복된다.
+
+# 18
+Q URL에 이름(`name`)을 지정하는 이유로 가장 적절한 것은?
+1 URL을 암호화해서 사용자에게 숨기기 위해
+2 URL을 해석하는 처리 속도를 높이기 위해
+3 경로가 바뀌어도 이름으로 링크를 유지하기 위해
+4 앱을 INSTALLED_APPS에 자동으로 등록하기 위해
+A 3
+E 주소를 하드코딩하면 경로가 바뀔 때 모든 곳을 고쳐야 한다. 이름만 유지하면 된다. 강의 확인문제 8번.
+
+# 19
+Q `path('<int:num>/', views.detail, name='detail')`일 때, 1번 글로 가는 링크를 만드는 올바른 DTL은?
+1 `{{ url 'detail' 1 }}`
+2 `{% url 'detail', 1 %}`
+3 `{% url 'detail' 1 %}`
+4 `{% url detail=1 %}`
+A 3
+E url은 태그라 `{% %}`를 쓰고, URL 이름과 인자는 쉼표 없이 띄어쓰기로 구분한다.
+
+# 20
+Q articles 앱 urls.py에 `app_name = 'articles'`와 `name='index'`가 있을 때 올바른 url 태그는?
+1 `{% url 'index:articles' %}`
+2 `{% url 'articles:index' %}`
+3 `{% url 'articles.index' %}`
+4 `{% url 'articles/index' %}`
+A 2
+E 형식은 `'app_name:path_name'`. app_name은 URL 이름 중복을 막는 네임스페이스다.
+
+@@ 03
+# 1
+Q Django Model 클래스가 반드시 상속해야 하는 부모 클래스는?
+1 `models.Model`
+2 `models.CharField`
+3 `forms.ModelForm`
+4 `django.db.Table`
+A 1
+E `models.Model`을 상속해야 테이블 생성·CRUD 등 모델 기능을 물려받는다. CharField는 개별 컬럼 타입.
+
+# 2
+Q articles 앱의 models.py에 다음 모델이 있다. 설명으로 **옳은** 것은?
+```python
+class Article(models.Model):
+    title = models.CharField(max_length=10)
+    content = models.TextField()
+```
+1 id 필드를 적지 않았으므로 기본키가 없는 테이블이 만들어진다.
+2 클래스를 정의하고 저장하는 즉시 DB에 테이블이 생성된다.
+3 migrate하면 `articles_article` 테이블이 만들어진다.
+4 title과 content는 각각 테이블의 행(row) 하나에 해당한다.
+A 3
+E 테이블 이름은 `앱이름_모델이름소문자`. id는 자동 생성되고, 필드는 컬럼에 해당하며, 테이블은 migrations 이후에 생긴다.
+
+# 3
+Q 모델과 DB의 대응으로 **옳지 않은** 것은?
+1 모델 클래스 — 테이블
+2 클래스 변수(필드) — 컬럼(열)
+3 모델 인스턴스 1개 — 테이블 1개
+4 id 필드 — 자동 생성되는 기본키
+A 3
+E 인스턴스 1개는 테이블의 **행(레코드) 1개**에 해당한다.
+
+# 4
+Q 게시글 제목처럼 길이가 짧고 예상 가능한 문자열에 적합한 필드는?
+1 `TextField`
+2 `CharField`
+3 `IntegerField`
+4 `FileField`
+A 2
+E 길이가 제한된 짧은 문자열은 CharField, 본문처럼 긴 글은 TextField.
+
+# 5
+Q 빈칸에 들어갈, 문자열의 최대 길이를 지정하는 필드 옵션은?
+```python
+title = models.CharField(_______=10)
+```
+1 `max_value`
+2 `length`
+3 `size`
+4 `max_length`
+A 4
+E CharField에는 max_length를 항상 적는다. 10자를 넘으면 유효성 검사에서 걸린다.
+
+# 6
+Q 필드 타입과 저장 데이터의 연결로 **옳지 않은** 것은?
+1 `DateField` — 날짜
+2 `TimeField` — 날짜와 시간
+3 `DateTimeField` — 날짜와 시간
+4 `FloatField` — 실수
+A 2
+E TimeField는 시간만 저장한다. 날짜와 시간을 함께 저장하는 건 DateTimeField.
+
+# 7
+Q `null`과 `blank` 옵션에 대한 설명으로 **옳은** 것은?
+1 null은 form의 빈 값 허용, blank는 DB의 NULL 허용 여부다.
+2 두 옵션의 기본값은 모두 True다.
+3 blank=True만 지정하면 DB에도 NULL이 저장된다.
+4 null은 DB 레벨, blank는 유효성 검사(form) 레벨의 설정이다.
+A 4
+E null=DB에 NULL 허용, blank=form에서 빈 값 허용. 기본값은 둘 다 False이고 서로 대체할 수 없다.
+
+# 8
+Q `content = models.TextField(blank=True)`로 정의했을 때의 설명으로 옳은 것은?
+1 form에서 content를 비워도 유효성 검사를 통과한다.
+2 DB에 SQL NULL 값이 저장된다.
+3 content 컬럼이 테이블에서 제외된다.
+4 content는 반드시 입력해야 하는 필수 항목이 된다.
+A 1
+E blank=True는 form 검증에서 빈 값을 허용한다. 문자열 필드는 빈 문자열 `''`로 저장되며 SQL NULL과는 다르다.
+
+# 9
+Q makemigrations와 migrate에 대한 설명으로 **옳지 않은** 것은?
+1 makemigrations는 모델 변경을 감지해 migration 파일을 만든다.
+2 migrate는 아직 적용되지 않은 migration을 DB에 반영한다.
+3 migration 파일은 모델 변경 내역을 순서대로 기록한 Python 코드다.
+4 makemigrations만 실행해도 DB에 테이블이 즉시 생성된다.
+A 4
+E makemigrations는 설계도 파일만 만든다. 실제 DB 반영은 migrate.
+
+# 10
+Q 모델 클래스를 수정한 뒤 DB에 반영하는 올바른 순서는?
+1 migrate → makemigrations
+2 makemigrations → migrate
+3 runserver → migrate
+4 makemigrations → runserver
+A 2
+E model 변경 → makemigrations(설계도 생성) → migrate(DB 반영).
+
+# 11
+Q 객체가 **처음 생성될 때만** 현재 시각을 자동 저장하는 옵션은?
+1 `auto_now=True`
+2 `default=now`
+3 `auto_now_add=True`
+4 `auto_create=True`
+A 3
+E add = 최초 추가 시점. created_at에 쓴다.
+
+# 12
+Q `updated_at = models.DateTimeField(auto_now=True)`의 동작은?
+1 객체가 처음 생성될 때만 시각을 저장한다.
+2 사용자가 form에서 직접 시각을 입력해야 한다.
+3 DB에 NULL이 저장된다.
+4 객체가 save()될 때마다 현재 시각으로 갱신된다.
+A 4
+E auto_now는 저장할 때마다 갱신 → 수정 시각 기록용.
+
+# 13
+Q 데이터가 이미 있는 테이블에 NULL을 허용하지 않는 새 필드를 추가하고 makemigrations를 실행하면?
+1 기존 데이터가 모두 자동으로 삭제된 뒤 필드가 추가된다.
+2 새 필드는 기존 행에서 NULL 값으로 자동 채워진다.
+3 기존 행에 채울 기본값을 묻는 프롬프트가 나온다.
+4 에러가 발생하며 해당 필드는 더 이상 추가할 수 없다.
+A 3
+E 기존 행에 채울 값이 없기 때문. 1) 지금 일회성 기본값 입력(빈 Enter 시 timezone.now) 또는 2) 종료 후 models.py에 default 지정.
+
+# 14
+Q Migrations에 대한 설명으로 **옳지 않은** 것은?
+1 변경 사항이 코드로 남아 협업 시 추적·공유가 쉽다.
+2 처음 migrate하면 admin, auth 같은 기본 앱의 migration도 함께 적용된다.
+3 `showmigrations`로 각 migration의 적용 여부를 확인할 수 있다.
+4 migrations 폴더의 자동 생성 파일은 필요할 때 직접 수정하는 것이 원칙이다.
+A 4
+E 자동 생성된 migration 파일은 직접 수정·삭제하지 않는 것이 원칙이다.
+
+# 15
+Q `python manage.py sqlmigrate articles 0001`의 역할은?
+1 해당 migration이 실행할 SQL을 출력만 한다.
+2 해당 migration을 DB에 적용한다.
+3 0001 migration 파일을 삭제한다.
+4 articles 앱의 모든 데이터를 SQL 파일로 백업한다.
+A 1
+E sqlmigrate는 migration이 어떤 SQL로 변환되는지 보여줄 뿐 실행하지 않는다.
+
+# 16
+Q Admin 사이트에서 사용할 관리자 계정을 만드는 명령어는?
+1 `python manage.py createsuperuser`
+2 `python manage.py createadmin`
+3 `django-admin createsuperuser`
+4 `python manage.py adduser`
+A 1
+E manage.py 위치에서 createsuperuser. migrate로 기본 테이블이 먼저 있어야 한다.
+
+# 17
+Q Article 모델을 Admin 사이트에 표시하기 위한 admin.py 코드는?
+1 `admin.register(Article)`
+2 `admin.site.register(Article)`
+3 `admin.site.add(Article)`
+4 `Article.objects.register(admin)`
+A 2
+E `from .models import Article` 후 `admin.site.register(Article)`.
+
+# 18
+Q Django Admin에 대한 설명으로 **옳은** 것은?
+1 별도 패키지를 설치해야 사용할 수 있다.
+2 프로젝트의 모든 모델이 자동으로 Admin 화면에 나타난다.
+3 등록된 모델의 데이터를 웹 화면에서 생성·조회·수정·삭제할 수 있다.
+4 createsuperuser를 실행하면 모델 등록도 함께 이루어진다.
+A 3
+E Admin은 기본 제공되며, 등록(register)한 모델만 보인다. 계정 생성과 모델 등록은 별개 작업.
+
+# 19
+Q Django 기본 설정에서 사용하는 데이터베이스와 그 파일의 연결로 옳은 것은?
+1 MySQL — db.mysql
+2 SQLite — db.sqlite3
+3 PostgreSQL — db.psql
+4 SQLite — manage.py
+A 2
+E 기본 DB 엔진은 가벼운 관계형 DB인 SQLite, 데이터는 db.sqlite3 파일 하나에 저장된다.
+
+# 20
+Q 학습용 로컬 DB를 초기화하는 방법으로 옳은 것은?
+1 번호 붙은 migration 파일과 db.sqlite3 삭제 후 makemigrations, migrate
+2 `__init__.py`까지 포함해 migrations 폴더를 통째로 삭제한 뒤 migrate만 실행
+3 models.py의 클래스를 모두 지우고 runserver를 다시 실행해 테이블을 비운다
+4 같은 방법으로 운영 서버의 데이터도 초기화해 맞춘다
+A 1
+E `__init__.py`는 남겨야 한다. 이 방법은 데이터가 전부 사라지므로 로컬 학습 환경에서만 쓴다.
+
+@@ 04
+# 1
+Q ORM에 대한 설명으로 **옳은** 것은?
+1 ORM을 쓰면 SQL이 전혀 실행되지 않는다.
+2 객체와 DB 데이터를 매핑해 Python 코드로 DB를 조작하게 해준다.
+3 HTML과 Python 코드를 분리하기 위한 템플릿 시스템이다.
+4 Django에서만 존재하는 데이터베이스 엔진이다.
+A 2
+E ORM은 Python과 DB(SQL) 사이의 번역자다. SQL은 ORM이 내부적으로 만들어 실행한다.
+
+# 2
+Q `Article.objects.all()`에서 `objects`의 정체는?
+1 테이블을 정의한 모델 클래스
+2 QuerySet API 메서드
+3 DB 질의의 진입점인 Manager
+4 조회 결과로 받은 모델 인스턴스
+A 3
+E Article=모델 클래스, objects=매니저(쿼리의 진입점, 모든 모델에 자동 추가), all()=QuerySet API 메서드.
+
+# 3
+Q QuerySet에 대한 설명으로 **옳지 않은** 것은?
+1 DB에서 가져온 객체 목록이며 for문으로 순회할 수 있다.
+2 0개 이상의 데이터를 담을 수 있다.
+3 all()과 filter()는 둘 다 QuerySet 객체를 반환한다.
+4 get()도 조건에 맞는 객체를 QuerySet으로 감싸 반환한다.
+A 4
+E get()은 QuerySet이 아니라 모델 인스턴스 하나를 반환한다.
+
+# 4
+Q 기존 데이터가 없는 상태에서 다음 코드를 실행한 직후 `Article.objects.all()`의 결과는?
+```python
+article = Article()
+article.title = 'first'
+article.content = 'django!'
+```
+1 `<QuerySet []>`
+2 `<QuerySet [<Article: Article object (1)>]>`
+3 `<QuerySet [<Article: Article object (None)>]>`
+4 DoesNotExist 예외
+A 1
+E save()를 호출하지 않았으므로 DB에는 아직 아무것도 없다.
+
+# 5
+Q 다음 중 호출 즉시 DB에 저장되는 코드는?
+1 `Article.objects.create(title='a', content='b')`
+2 `Article(title='a', content='b')`
+3 `article = Article(); article.title = 'a'`
+4 `Article.objects.filter(title='a')`
+A 1
+E create()는 생성과 저장을 한 번에 하는 단축 메서드. ②③은 save() 전이라 미저장, ④는 조회.
+
+# 6
+Q save() 메서드에 대한 설명으로 **옳지 않은** 것은?
+1 객체를 DB에 저장하는 인스턴스 메서드다.
+2 pk가 없는 객체면 새로 생성(INSERT)한다.
+3 pk가 있는 객체면 기존 행을 수정(UPDATE)한다.
+4 저장하기 전에 입력값의 유효성을 자동으로 검사한다.
+A 4
+E save()는 값을 검사하지 않고 그대로 저장한다. 입력값 검증은 Form의 몫(6단원).
+
+# 7
+Q 아직 저장하지 않은 새 Article 인스턴스의 `article.pk` 값은?
+1 `None`
+2 `0`
+3 `1`
+4 AttributeError 발생
+A 1
+E pk는 save() 이후에 배정된다. 그래서 출력도 `Article object (None)`.
+
+# 8
+Q pk=100인 글이 없을 때 `Article.objects.get(pk=100)`의 결과는?
+1 None 반환
+2 빈 QuerySet 반환
+3 MultipleObjectsReturned 예외
+4 DoesNotExist 예외
+A 4
+E get()은 결과가 0개면 DoesNotExist, 2개 이상이면 MultipleObjectsReturned.
+
+# 9
+Q `content='django!'`인 글이 3개일 때 `Article.objects.get(content='django!')`의 결과는?
+1 가장 먼저 저장된(pk가 가장 작은) 객체 하나를 반환
+2 `MultipleObjectsReturned` 예외 발생
+3 3개가 담긴 QuerySet을 반환
+4 `DoesNotExist` 예외 발생
+A 2
+E get()은 딱 하나일 때만 성공한다. 여러 개를 원하면 filter().
+
+# 10
+Q 조건에 맞는 데이터가 하나도 없을 때 `Article.objects.filter(title='abc')`의 결과는?
+1 DoesNotExist 예외
+2 `<QuerySet []>`
+3 `None`
+4 `False`
+A 2
+E filter()는 결과가 없어도 예외 없이 빈 QuerySet을 반환한다.
+
+# 11
+Q get()을 사용하기에 가장 적합한 상황은?
+1 제목에 특정 단어가 포함된 글을 모두 찾을 때
+2 전체 게시글 목록을 한 번에 가져와 보여줄 때
+3 같은 내용(content)을 가진 여러 글을 모두 찾을 때
+4 pk처럼 고유한 값으로 객체 하나를 찾을 때
+A 4
+E get()은 0개·2개 이상이면 예외가 나므로 pk 같은 고유한 값으로 조회할 때 쓴다.
+
+# 12
+Q 1번 글의 제목을 'byebye'로 바꿔 **DB에 반영**하려 한다. 빈칸에 들어갈 코드는?
+```python
+article = Article.objects.get(pk=1)
+article.title = 'byebye'
+_______
+```
+1 `article.update()`
+2 `article.commit()`
+3 `article.save()`
+4 `Article.objects.save(article)`
+A 3
+E 조회 → 값 변경 → save(). 대입만 하면 메모리 속 객체만 바뀌고 DB는 그대로다. save()는 pk가 있으면 UPDATE.
+
+# 13
+Q Article 1개를 삭제할 때 `article.delete()`의 반환값 형태는?
+1 `{'articles.Article': 1}`
+2 `(1, {'articles.Article': 1})`
+3 `(1, True)`
+4 `<QuerySet [<Article: Article object (1)>]>`
+A 2
+E (삭제된 총 개수, 모델별 삭제 개수 딕셔너리) 튜플을 반환한다.
+
+# 14
+Q 1~3번 글이 있는 상태에서 1번 글을 삭제하고 새 글을 생성했다. 강의 환경(SQLite) 기준 새 글의 pk는?
+1 1
+2 3
+3 0
+4 4
+A 4
+E 한 번 쓴 pk는 재사용하지 않는다(Django가 SQLite 테이블에 AUTOINCREMENT를 붙이기 때문).
+
+# 15
+Q 제목에 'django'가 포함된 글을 **대소문자 구분 없이** 찾는 코드는?
+1 `Article.objects.filter(title__contains='django')`
+2 `Article.objects.filter(title__icontains='django')`
+3 `Article.objects.filter(title='django')`
+4 `Article.objects.filter(title_icontains='django')`
+A 2
+E i = case-insensitive. ④는 언더스코어가 1개라 잘못된 문법.
+
+# 16
+Q Field Lookup 문법에 대한 설명으로 **옳은** 것은?
+1 `필드명__lookup=값` 형태로 언더스코어 2개를 쓴다.
+2 `필드명.lookup=값` 형태로 점을 쓴다.
+3 filter()에서는 쓸 수 없고 get()에서만 쓴다.
+4 `title='Django'`와 `title__exact='Django'`는 다른 결과를 낸다.
+A 1
+E filter·exclude·get 모두에서 쓸 수 있고, exact는 생략 가능한 기본 lookup이라 ④의 두 코드는 같다.
+
+# 17
+Q `Article.objects.filter(pk__gte=10)`의 의미는?
+1 pk가 10 미만인 글
+2 pk가 10 초과인 글
+3 pk가 10 이상인 글
+4 pk가 10인 글 하나
+A 3
+E gt(>), gte(>=), lt(<), lte(<=). e = equal.
+
+# 18
+Q `Article.objects.exclude(title='abc')`의 결과는?
+1 제목이 abc인 글만
+2 제목에 abc가 포함된 글만
+3 제목이 abc인 글을 제외한 나머지
+4 제목이 abc인 글을 DB에서 삭제
+A 3
+E exclude는 조건에 맞는 행을 빼고 조회한다. 삭제가 아니다.
+
+# 19
+Q Django shell에 대한 설명으로 **옳은** 것은?
+1 실행한 QuerySet API가 실제 DB에 그대로 반영된다.
+2 shell에서 만든 데이터는 shell을 종료하면 자동으로 사라진다.
+3 `shell -v 2`는 ORM이 실행하는 SQL을 출력하는 옵션이다.
+4 IPython을 먼저 설치해야만 shell을 실행할 수 있다.
+A 1
+E shell은 Django 환경에서 실행되므로 실제 DB에 그대로 반영된다. `-v 2`는 자동 import 목록 출력, IPython은 편의 도구일 뿐 필수가 아니다.
+
+# 20
+Q 전체 게시글을 템플릿에 출력하려 할 때 빈칸에 들어갈 코드는?
+```python
+def index(request):
+    articles = _______
+    context = {'articles': articles}
+    return render(request, 'articles/index.html', context)
+```
+1 `Article.objects.get()`
+2 `Article.all()`
+3 `Article.objects.all()`
+4 `Article.objects.filter(pk=1)`
+A 3
+E 모델클래스.매니저.메서드 구조. 템플릿에서는 for 태그로 하나씩 꺼내 쓴다.
+
+@@ 05
+# 1
+Q 단일 게시글 조회 코드에서 빈칸에 알맞은 것은?
+```python
+# urls.py
+path('<int:pk>/', views.detail, name='detail')
+
+# views.py
+def detail(request, pk):
+    article = _______
+```
+1 `Article.objects.get(pk=pk)`
+2 `Article.objects.all(pk)`
+3 `Article.objects.filter(pk)`
+4 `Article.get(pk=pk)`
+A 1
+E 왼쪽 pk는 필드 이름, 오른쪽 pk는 URL에서 넘어온 변수. 매니저(objects)를 거쳐야 한다.
+
+# 2
+Q index.html에서 각 글 제목을 상세 페이지로 링크하는 코드로 옳은 것은? (app_name = 'articles')
+1 `<a href="{% url 'articles:detail' %}">{{ article.title }}</a>`
+2 `<a href="{% url 'articles:detail' article.pk %}">{{ article.title }}</a>`
+3 `<a href="{{ url 'articles:detail' article.pk }}">{{ article.title }}</a>`
+4 `<a href="/articles/article.pk/">{{ article.title }}</a>`
+A 2
+E detail URL에는 pk 변수가 있으므로 인자로 article.pk를 넘겨야 한다. url은 `{% %}` 태그.
+
+# 3
+Q Create 기능의 new와 create view 역할로 **옳은** 것은?
+1 new는 입력 페이지를 보여주고, create는 DB에 저장한다.
+2 new는 DB에 저장하고, create는 입력 페이지를 보여준다.
+3 둘 다 사용자가 입력한 데이터를 DB에 저장한다.
+4 new는 전체 글 목록을, create는 상세 페이지를 보여준다.
+A 1
+E Create에는 view 두 개가 필요하다: 입력 페이지(new) + 저장 처리(create).
+
+# 4
+Q GET과 POST의 비교로 **옳지 않은** 것은?
+1 GET은 주로 조회, POST는 주로 생성·수정·삭제에 쓴다.
+2 POST로 보낸 데이터는 자동으로 암호화되어 안전하다.
+3 GET 데이터는 URL의 쿼리 스트링에 담긴다.
+4 POST 데이터는 HTTP Body에 담긴다.
+A 2
+E POST는 주소창에 안 보일 뿐 암호화되지 않는다. 전송 중 보호는 HTTPS의 역할.
+
+# 5
+Q GET 방식의 특징으로 **옳은** 것은?
+1 HTTP 규격상 데이터 크기 제한이 없다.
+2 요청 URL이 브라우저 히스토리에 남지 않는다.
+3 서버 상태를 변경하는 요청이라 캐싱이 불가능하다.
+4 같은 URL을 다시 요청하면 캐싱된 결과를 쓸 수 있다.
+A 4
+E ①②③은 POST의 특징. GET은 URL 길이 제한이 있고, 히스토리에 남고, 캐싱이 가능하다.
+
+# 6
+Q 강의 기준, HTML form의 method로 지정할 수 있는 HTTP 메서드는?
+1 GET, PUT
+2 GET, POST
+3 POST, DELETE
+4 GET, POST, PUT, DELETE
+A 2
+E HTML form은 GET과 POST만 지원한다. 그래서 지금은 생성·수정·삭제를 모두 POST로 처리한다(PUT·DELETE는 REST API에서).
+
+# 7
+Q form을 POST로 바꾼 뒤 게시글을 작성하자 403 Forbidden이 발생했다. 이유는?
+1 URL 패턴이 존재하지 않아서
+2 view 함수에 문법 오류가 있어서
+3 CSRF 토큰이 누락되어서
+4 DB에 테이블이 없어서
+A 3
+E 403 = 요청은 전달됐지만 권한 때문에 거절. 메시지: CSRF verification failed. `{% csrf_token %}`을 넣으면 해결.
+
+# 8
+Q HTTP 상태 코드와 의미의 연결로 **옳지 않은** 것은?
+1 200 — 요청 성공
+2 302 — 리다이렉션
+3 404 — 요청한 리소스를 찾을 수 없음
+4 403 — 서버 내부 오류
+A 4
+E 403은 Forbidden(권한 거부, 4xx 클라이언트 측 오류). 서버 내부 오류는 500(5xx).
+
+# 9
+Q CSRF에 대한 설명으로 **옳은** 것은?
+1 사용자 의도와 무관한 요청을 대신 보내게 만드는 공격이다.
+2 입력창에 악성 SQL을 넣어 DB의 데이터를 탈취하는 공격이다.
+3 서버에 대량의 요청을 한꺼번에 보내 서비스를 마비시키는 공격이다.
+4 가능한 비밀번호를 하나씩 대입해 계정을 알아내는 공격이다.
+A 1
+E Cross-Site Request Forgery(사이트 간 요청 위조). 브라우저가 세션 쿠키를 자동으로 첨부하는 점을 악용한다.
+
+# 10
+Q `{% csrf_token %}`에 대한 설명으로 **옳지 않은** 것은?
+1 hidden input(`csrfmiddlewaretoken`)으로 토큰을 렌더링한다.
+2 요청이 Django가 제공한 페이지에서 왔는지 확인하는 데 쓰인다.
+3 POST form 안에 작성한다.
+4 전송되는 form 데이터를 암호화한다.
+A 4
+E CSRF 토큰은 요청 출처 확인용이지 암호화 기능이 아니다.
+
+# 11
+Q Django가 GET 요청에는 CSRF 토큰을 검사하지 않는 이유는?
+1 GET은 항상 HTTPS로만 전송되기 때문에
+2 GET 요청에는 쿠키가 전송되지 않기 때문에
+3 GET은 서버 데이터를 바꾸지 않기로 약속된 요청이라서
+4 GET은 CSRF 토큰을 쿼리 스트링에 자동으로 붙이기 때문에
+A 3
+E 그래서 GET으로 데이터를 바꾸도록 만들면 CSRF 보호를 받을 수 없다.
+
+# 12
+Q 게시글 저장 후 render 대신 redirect를 쓰는 이유로 가장 적절한 것은?
+1 render는 POST 요청에서 사용할 수 없기 때문에
+2 redirect가 render보다 HTML을 더 빠르게 만들기 때문에
+3 redirect를 쓰면 CSRF 토큰이 필요 없어지기 때문에
+4 완료 화면에서 새로고침했을 때 같은 POST가 다시 전송되는 것을 막기 위해
+A 4
+E 저장 후 GET 페이지로 보내면(PRG 패턴) 새로고침해도 GET만 다시 간다. 중복 게시물 방지.
+
+# 13
+Q redirect()의 동작으로 **옳은** 것은?
+1 서버가 detail view를 직접 호출해 HTML을 바로 응답한다.
+2 클라이언트에게 HTML 없이 200 응답만 보낸다.
+3 클라이언트가 지정한 주소로 GET 요청을 다시 보내도록 응답한다.
+4 브라우저 히스토리를 모두 삭제한다.
+A 3
+E 서버가 직접 이동시키는 게 아니라 302 + 이동할 주소를 보내 클라이언트가 다시 요청하게 한다.
+
+# 14
+Q 게시글 작성 후 개발자 도구 Network 탭에 보이는 요청 순서로 옳은 것은?
+1 detail/(200) → create/(302)
+2 create/(302) → 새 글의 detail/(200)
+3 create/(200) → index/(200)
+4 create/(403) → detail/(302)
+A 2
+E [POST] create → 302 redirect → [GET] 새 글 상세 → 200.
+
+# 15
+Q 게시글 삭제 기능의 구현으로 가장 적절한 것은?
+1 POST form + `{% csrf_token %}`으로 요청하고, 삭제 후 index로 redirect
+2 `<a href="{% url 'articles:delete' article.pk %}">`로 요청하고 delete.html을 render
+3 GET form으로 요청하고 삭제 후 detail로 redirect
+4 POST form으로 요청하되 csrf_token 없이 보낸다.
+A 1
+E 삭제는 DB를 바꾸는 요청 → POST + CSRF. 삭제된 글의 detail로는 갈 수 없으니 목록으로.
+
+# 16
+Q 강의 초반의 다음 delete view가 가진 문제점은?
+```python
+def delete(request, pk):
+    article = Article.objects.get(pk=pk)
+    article.delete()
+    return redirect('articles:index')
+```
+1 주소창에 URL을 직접 입력(GET)해도 삭제된다.
+2 삭제 후 이미 지워진 글의 detail로 이동해 에러가 난다.
+3 delete()는 QuerySet에서만 동작하므로 AttributeError가 난다.
+4 form에 CSRF 토큰이 있으면 오히려 삭제되지 않는다.
+A 1
+E 요청 메서드를 확인하지 않아서다. 이후 `if request.method == 'POST':`로 POST일 때만 삭제하도록 고친다.
+
+# 17
+Q 수정 페이지에서 기존 내용을 textarea에 출력하는 올바른 코드는?
+1 `<textarea name="content" value="{{ article.content }}"></textarea>`
+2 `<textarea name="content">{{ article.content }}</textarea>`
+3 `<textarea name="content" placeholder="{{ article.content }}"></textarea>`
+4 `<textarea name="{{ article.content }}"></textarea>`
+A 2
+E textarea에는 value 속성이 없다. 여닫는 태그 사이에 값을 넣는다. (input은 value 속성 사용)
+
+# 18
+Q 다음 update view가 실행된 후 DB에 저장된 제목은?
+```python
+def update(request, pk):
+    article = Article.objects.get(pk=pk)
+    article.title = request.POST.get('title')
+    return redirect('articles:detail', article.pk)
+```
+1 새로 입력한 제목으로 바뀐다.
+2 제목이 빈 값이 된다.
+3 새 글이 하나 더 생성된다.
+4 기존 제목 그대로다.
+A 4
+E save()가 빠졌다. 대입만으로는 메모리 속 객체만 바뀌고 DB는 그대로다.
+
+# 19
+Q 없는 pk로 detail 요청이 왔을 때(`Article.objects.get(pk=pk)` 사용) 설명으로 옳은 것은?
+1 Django가 자동으로 404 Not Found 페이지를 응답한다.
+2 빈 detail 페이지가 에러 없이 정상 출력된다.
+3 DoesNotExist 예외가 난다. 404는 직접 처리해야 한다.
+4 index 페이지로 자동 redirect되어 목록을 보여준다.
+A 3
+E get()의 DoesNotExist는 자동으로 404가 되지 않는다(처리 안 하면 서버 에러).
+
+# 20
+Q 캐싱에 대한 설명으로 **옳지 않은** 것은?
+1 자주 쓰는 데이터나 결과를 임시 저장해 재사용하는 기술이다.
+2 응답 속도를 높이고 서버 부하를 줄인다.
+3 원본 데이터가 바뀌어도 캐시는 자동으로 항상 최신 상태를 유지한다.
+4 GET 요청의 결과는 캐싱할 수 있다.
+A 3
+E 원본이 바뀌면 캐시를 갱신·무효화해야 한다. 일관성 관리는 캐시의 단점이다.

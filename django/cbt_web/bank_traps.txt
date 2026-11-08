@@ -1,0 +1,920 @@
+@@ 01
+# 21
+Q urls.py에 `path('articles/', views.index())`처럼 **괄호를 붙여** 작성하면?
+1 요청이 올 때마다 index가 정상적으로 호출되어 응답한다.
+2 URL 이름(name)이 자동으로 'index'로 지정된다.
+3 첫 요청 때 한 번만 호출되고 이후엔 결과가 재사용된다.
+4 읽는 즉시 호출되어 TypeError가 난다.
+A 4
+E 괄호를 붙이면 URL 설정을 읽는 순간 함수가 실행된다. request 없이 호출되니 TypeError. 함수 자체(주소)만 넘겨야 요청이 왔을 때 Django가 호출한다.
+
+# 22
+Q `render(request, 'articles/index.html')`처럼 세 번째 인자 context를 생략하면?
+1 TypeError가 발생한다. 세 번째 인자는 필수다.
+2 템플릿이 렌더링되지 않고 빈 응답이 전송된다.
+3 정상 동작한다. context는 선택 인자다.
+4 HttpResponse 대신 HTML 문자열이 반환된다.
+A 3
+E `render(request, template_name, context=None)`. 넘길 데이터가 없으면 생략해도 된다.
+
+# 23
+Q 강의에서 정리한 Django 규칙에 대한 설명으로 **옳지 않은** 것은?
+1 urls.py의 각 URL 경로 문자열은 `/`로 끝난다.
+2 모든 view 함수는 첫 번째 인자로 요청 객체를 받는다.
+3 템플릿은 `app폴더/templates/` 아래에서 찾는다.
+4 첫 매개변수 이름이 request가 아니면 동작하지 않는다.
+A 4
+E 첫 번째 인자로 요청 객체를 받는 게 규칙이고, 이름 `request`는 관례다. 다른 이름을 써도 동작은 한다.
+
+# 24
+Q settings.py의 INSTALLED_APPS에 `'articles'`를 **먼저** 적고 나서 `python manage.py startapp articles`를 실행하면?
+1 정상적으로 앱이 만들어지고 등록 상태도 유지된다.
+2 articles 모듈을 찾지 못해 에러가 나고 생성되지 않는다.
+3 startapp이 INSTALLED_APPS의 'articles'를 자동으로 지운다.
+4 앱이 두 번 등록되어 같은 이름의 앱이 두 개 생긴다.
+A 2
+E manage.py가 설정을 읽으며 등록된 앱을 불러오는데 아직 없는 모듈이라 ModuleNotFoundError. 순서는 반드시 생성 → 등록.
+
+# 25
+Q 템플릿을 `articles/templates/articles/index.html`처럼 templates 안에 **앱 이름 폴더를 한 번 더** 두는 이유는?
+1 앱 이름 폴더가 없으면 Django가 템플릿을 아예 찾지 못해서
+2 render()의 두 번째 인자에 앱 이름이 반드시 들어가야 해서
+3 템플릿 파일 이름은 앱 이름으로 시작해야 하는 규칙이라서
+4 여러 앱의 같은 이름 템플릿이 충돌하지 않게 구분하려고
+A 4
+E 모든 앱의 templates 폴더가 하나의 검색 공간으로 합쳐지기 때문에 index.html이 여러 개면 충돌한다. 앱 이름 폴더가 네임스페이스 역할을 한다.
+
+# 26
+Q 프로젝트 파일과 역할의 연결로 **옳지 않은** 것은?
+1 manage.py — 프로젝트 관리 명령 실행
+2 settings.py — URL과 view 함수를 연결
+3 wsgi.py / asgi.py — 배포 시 웹 서버와 연결하는 인터페이스
+4 `__init__.py` — 해당 폴더를 Python 패키지로 인식시킴
+A 2
+E URL과 view 연결은 urls.py. settings.py는 INSTALLED_APPS, DB 등 프로젝트 설정.
+
+# 27
+Q 가상 환경을 켰던 터미널을 닫고, 새 터미널에서 **활성화하지 않은 채** `pip install requests`를 실행했다. 패키지는 어디에 설치되는가?
+1 가상 환경이 아니라 Python global 환경에 설치된다.
+2 마지막으로 활성화했던 가상 환경에 자동으로 설치된다.
+3 가상 환경이 꺼져 있으면 pip 명령 자체가 실행되지 않는다.
+4 현재 폴더에 venv가 있으면 그 안에 자동으로 설치된다.
+A 1
+E 활성화는 그 터미널에만 적용된다. 새 터미널은 다시 활성화해야 하고, 안 하면 global에 깔린다.
+
+# 28
+Q `pip freeze > requirements.txt`를 패키지를 더 설치한 뒤 **한 번 더** 실행하면 requirements.txt는?
+1 두 번째 실행 결과가 기존 내용 뒤에 이어 붙는다.
+2 기존 내용이 지워지고 새 목록으로 덮어써진다.
+3 파일이 이미 있으면 에러가 나며 실행되지 않는다.
+4 중복된 패키지만 빠진 목록으로 합쳐진다.
+A 2
+E 셸의 `>`는 덮어쓰기다. 이어 붙이기는 `>>`. 어차피 freeze는 현재 설치 전체를 다시 출력하므로 덮어써도 최신 목록이 된다.
+
+# 29
+Q Django 공식 FAQ 기준, '**어떤** 데이터를 보여줄지'를 결정하는 것과 '**어떻게** 보여줄지'를 결정하는 것의 순서쌍은?
+1 View — Template
+2 Template — View
+3 Model — Template
+4 View — Model
+A 1
+E View는 어떤 데이터를 보여줄지, Template은 어떻게 보일지를 맡는다. 그래서 MVC의 View에 해당하는 것이 Django의 Template이다.
+
+# 30
+Q Django 요청-응답 흐름에 대한 설명으로 **옳지 않은** 것은?
+1 브라우저는 view가 반환한 응답을 해석해 화면을 그린다.
+2 urls.py는 요청 주소와 일치하는 view 함수를 호출한다.
+3 urls.py가 템플릿 HTML을 직접 렌더링해 응답한다.
+4 view는 Model·Template과 상호작용해 응답 객체를 만든다.
+A 3
+E urls.py는 주소와 view를 연결(라우팅)만 한다. 렌더링과 응답 생성은 view의 render().
+
+@@ 02
+# 21
+Q 다음 중 HTTP request method가 **아닌** 것은?
+1 `GET`
+2 `POST`
+3 `DELETE`
+4 `FETCH`
+A 4
+E FETCH는 JavaScript의 fetch() API 이름일 뿐 HTTP 메서드가 아니다. DELETE는 실제 HTTP 메서드지만 HTML form에서는 GET·POST만 쓸 수 있다. 강의 확인문제 4번.
+
+# 22
+Q `<form>` 태그에서 `method` 속성을 **생략**하면 어떤 방식으로 전송되는가?
+1 GET
+2 POST
+3 전송되지 않는다
+4 브라우저마다 다르다
+A 1
+E method 기본값은 GET이다. action 생략(현재 페이지로 전송)과 함께 짝으로 외울 것.
+
+# 23
+Q `/articles/?page=3` 요청에서 3을 view로 꺼내는 방법은?
+1 view 함수의 매개변수 `page`로 받는다.
+2 `request.page`로 꺼낸다.
+3 `request.GET.get('page')`로 꺼낸다.
+4 `<int:page>` 패턴이 자동으로 받아 준다.
+A 3
+E `?page=3`은 쿼리 스트링이라 request.GET으로 받는다. view 인자로 들어오는 건 `/articles/3/`처럼 경로에 포함된 변수(Variable Routing)뿐.
+
+# 24
+Q detail 패턴이 `path('<int:pk>/', views.detail, name='detail')`인데 템플릿에서 `{% url 'articles:detail' %}`처럼 **인자 없이** 쓰면?
+1 NoReverseMatch 에러가 난다.
+2 pk 없이 `/articles/` 주소가 만들어진다.
+3 pk 자리에 0이 자동으로 채워진 주소가 된다.
+4 빈 문자열이 출력되고 에러는 나지 않는다.
+A 1
+E URL 패턴에 변수가 있으면 url 태그에도 그 인자를 넘겨야 역으로 주소를 만들 수 있다.
+
+# 25
+Q `path('articles/<int:num>/', views.detail)`만 있을 때 `/articles/abc/`로 요청하면?
+1 num='abc'로 detail view가 호출된다.
+2 num=None인 채로 detail view가 호출된다.
+3 일치하는 패턴이 없어 404 Not Found가 난다.
+4 abc를 정수로 바꾸다 실패해 500 에러가 난다.
+A 3
+E int 컨버터는 숫자만 매칭한다. view까지 가지도 않고 URL 매칭 단계에서 실패한다.
+
+# 26
+Q `app_name`에 대한 설명으로 **옳은** 것은?
+1 앱 urls.py에 쓰는 URL 네임스페이스이며 템플릿 폴더명과 무관하다.
+2 templates 아래 앱 폴더 이름과 반드시 같아야 동작한다.
+3 settings.py의 INSTALLED_APPS 목록 안에 선언한다.
+4 app_name을 지정하면 실제 URL 경로 앞에도 그 이름이 자동으로 붙는다.
+A 1
+E app_name은 url 태그에서 `'articles:index'`처럼 쓰는 이름 구분용이다. 실제 주소(/articles/)는 프로젝트 urls.py의 prefix가 결정한다.
+
+# 27
+Q 부모 base.html에는 `{% block content %}{% endblock %}`만 있다. 자식이 `{% block main %}...{% endblock %}`으로 작성하면?
+1 자식의 main 블록 내용이 content 자리에 대신 들어간다.
+2 블록 이름이 달라 TemplateSyntaxError가 발생한다.
+3 부모에 main 블록이 없어 자식의 내용이 화면에 나오지 않는다.
+4 부모의 content 블록 이름이 자동으로 main으로 바뀐다.
+A 3
+E 자식은 부모에 있는 이름의 block만 덮어쓸 수 있다. 이름이 다르면 에러 없이 조용히 무시된다 — 그래서 더 찾기 어렵다.
+
+# 28
+Q 한 템플릿 안에서 `{% extends %}` 태그를 **두 번** 사용하면?
+1 나중에 쓴 부모 템플릿만 적용된다.
+2 두 부모 템플릿이 순서대로 합쳐진다.
+3 먼저 쓴 부모 템플릿만 적용된다.
+4 에러가 발생한다.
+A 4
+E extends는 템플릿당 한 번만, 최상단에 쓴다. 두 번 쓰면 TemplateSyntaxError.
+
+# 29
+Q 다음 중 DTL 문법이 **올바른** 것은?
+1 `{{ if user.is_authenticated }}`
+2 `{% for article in articles %}`
+3 `{% article.title %}`
+4 `{{ url 'articles:index' }}`
+A 2
+E 로직(if·for·url 등 태그)은 `{% %}`, 값 출력은 `{{ }}`. ①④는 태그를 `{{ }}`에, ③은 변수를 `{% %}`에 넣었다.
+
+# 30
+Q 프로젝트 urls.py에 `path('pages/', include('pages.urls'))`, pages/urls.py에 `path('about/', views.about)`가 있다. about view의 URL은?
+1 `/about/`
+2 `/pages/about/`
+3 `/pages/pages/about/`
+4 `/about/pages/`
+A 2
+E 프로젝트 prefix + 앱 경로가 앞에서부터 이어 붙는다.
+
+@@ 03
+# 21
+Q `title = models.CharField(max_length=10, null=True)`로 정의하고, form에서 title을 **비운 채** 제출하면?
+1 DB에 NULL로 저장된다.
+2 빈 문자열 ''로 저장된다.
+3 blank 기본값이 False라 유효성 검사에서 막힌다.
+4 max_length 검사만 통과하면 그대로 저장된다.
+A 3
+E null=True는 DB 레벨 설정일 뿐이다. form에서 비워도 되게 하려면 blank=True가 따로 필요하다.
+
+# 22
+Q Model에 대한 설명으로 **옳지 않은** 것은?
+1 DB 테이블 구조를 정의하는 Python 클래스다.
+2 Model 클래스가 곧 데이터베이스 그 자체다.
+3 클래스 변수 하나가 테이블 컬럼 하나에 대응한다.
+4 models.Model을 상속해 테이블 생성·CRUD 기능을 물려받는다.
+A 2
+E Model은 DB를 다루기 위한 설계도이자 인터페이스다. 실제 데이터는 db.sqlite3 같은 DB에 있다.
+
+# 23
+Q `migrate`에 대한 설명으로 **옳은** 것은?
+1 migration 파일을 바탕으로 DB에 변경 사항을 적용한다.
+2 모델 변경을 감지해 migration 파일을 새로 만든다.
+3 모델이 바뀌지 않았어도 매번 새 migration 파일을 만든다.
+4 migration 파일이 없으면 models.py를 직접 읽어 테이블을 만든다.
+A 1
+E ②는 makemigrations의 설명이다. 둘의 역할을 뒤바꾼 보기가 단골 함정.
+
+# 24
+Q 기존 데이터가 있는 테이블에 created_at을 추가하다 makemigrations 프롬프트에서 `1) Provide a one-off default now`를 고르고 timezone.now를 입력했다. **옳은** 것은?
+1 models.py의 필드에 default=timezone.now가 자동으로 추가된다.
+2 앞으로 새로 만드는 글에도 이 값이 기본값으로 계속 쓰인다.
+3 이미 있던 행들을 채우는 데만 한 번 쓰인다.
+4 기존 행은 비워 두고 새로 만드는 행에만 적용된다.
+A 3
+E one-off(일회성) 기본값은 기존 행을 채우기 위한 것이다. 모델 필드의 영구 `default=` 옵션과는 다르다.
+
+# 25
+Q 생성일·수정일 필드와 옵션의 연결로 **옳은** 것은?
+1 created_at — auto_now=True / updated_at — auto_now_add=True
+2 created_at — auto_now_add=True / updated_at — auto_now=True
+3 created_at, updated_at 모두 auto_now=True
+4 created_at, updated_at 모두 auto_now_add=True
+A 2
+E add = 처음 추가될 때 한 번(생성일), now = 저장할 때마다(수정일). 뒤바꾼 ①이 대표 함정.
+
+# 26
+Q superuser를 만들고 admin에 로그인했는데 Article 메뉴가 보이지 않는다. 가장 직접적인 원인은?
+1 superuser에게는 Article을 볼 권한이 없어서
+2 migrate를 하지 않아 Article 테이블이 없어서
+3 runserver를 다시 실행하지 않아서
+4 admin.py에 Article을 등록하지 않아서
+A 4
+E 계정 생성과 모델 등록은 별개. `admin.site.register(Article)`을 해야 메뉴가 나온다.
+
+# 27
+Q `python manage.py showmigrations` 결과에서 `[ ] 0002_article_created_at...`의 의미는?
+1 0002 migration 파일이 손상되었다.
+2 0002 migration이 아직 DB에 적용되지 않았다.
+3 0002 migration이 이미 DB에 적용되었다.
+4 0002 migration 파일이 아직 만들어지지 않았다.
+A 2
+E `[X]`는 적용됨, `[ ]`는 파일은 있지만 미적용. migrate를 실행하면 [X]가 된다.
+
+# 28
+Q accounts 앱에 `class Profile(models.Model)`을 만들고 migrate했다. 생성되는 테이블 이름은?
+1 `profile`
+2 `Profile`
+3 `profile_accounts`
+4 `accounts_profile`
+A 4
+E `앱이름_모델이름소문자`. Article이 articles_article이 되는 것과 같은 규칙.
+
+# 29
+Q 다음 중 makemigrations가 **필요 없는** 변경은?
+1 views.py의 함수 내용을 수정했다.
+2 모델에 새 필드를 추가했다.
+3 필드의 max_length 값을 바꿨다.
+4 모델에서 필드 하나를 삭제했다.
+A 1
+E migration은 모델(테이블 구조) 변경만 기록한다. view 코드는 DB 구조와 무관.
+
+# 30
+Q Admin 사이트에서 게시글 내용을 수정하고 SAVE를 눌렀다. 옳은 것은?
+1 Admin 화면에서만 바뀌고 DB에는 반영되지 않는다.
+2 다음 migrate를 실행할 때 DB에 반영된다.
+3 DB의 articles_article 테이블에 바로 반영된다.
+4 Admin 수정은 superuser의 개인 복사본에만 적용된다.
+A 3
+E Admin의 CRUD는 실제 DB 데이터를 바로 바꾼다. migrate는 데이터가 아니라 구조 변경용.
+
+@@ 04
+# 21
+Q `article = Article.objects.get(pk=1)` 다음에 `article.objects.all()`을 실행하면?
+1 1번 글만 담긴 QuerySet이 반환된다.
+2 AttributeError가 발생한다.
+3 전체 글이 담긴 QuerySet이 반환된다.
+4 1번 글의 필드 이름 목록이 반환된다.
+A 2
+E objects(Manager)는 모델 **클래스**로만 접근한다. 인스턴스에서 부르면 "Manager isn't accessible via Article instances".
+
+# 22
+Q `result = article.save()`를 실행했을 때 result의 값은?
+1 `None`
+2 저장된 article 객체
+3 `True`
+4 저장된 행의 pk
+A 1
+E save()는 아무것도 반환하지 않는다. 생성된 객체를 반환하는 건 `objects.create()`.
+
+# 23
+Q Article 모델에 author 필드가 있다. author가 'anonymous'인 **모든** 글의 제목을 한 번에 '익명'으로 바꾸는 코드는?
+1 `Article.objects.get(author='anonymous').title = '익명'`
+2 `Article.objects.filter(author='anonymous').update(title='익명')`
+3 `Article.objects.filter(author='anonymous').save(title='익명')`
+4 `Article.objects.update(author='anonymous', title='익명')`
+A 2
+E 여러 레코드 일괄 수정은 QuerySet의 update(). ④는 조건 없이 모든 글의 author와 title을 바꿔 버린다. 강의 확인문제 10번.
+
+# 24
+Q `Article.objects.filter(title__startswith='Dj')`의 결과에 포함되는 제목은?
+1 'Django 입문'
+2 'Hello Django'
+3 '장고 Django'
+4 'Learn Dj'
+A 1
+E startswith는 앞부분 일치. 'Dj'가 어딘가에 들어 있기만 하면 되는 건 contains.
+
+# 25
+Q `article = Article.objects.filter(pk=1)` 다음에 `article.title`에 접근하면?
+1 1번 글의 제목 문자열이 그대로 나온다.
+2 QuerySet이라 None이 반환된다.
+3 빈 문자열('')이 나온다.
+4 AttributeError가 발생한다.
+A 4
+E filter()는 결과가 1개여도 QuerySet이다. 객체 하나가 필요하면 get() 또는 `[0]`.
+
+# 26
+Q `Article.objects.all().delete()`를 실행한 뒤의 상태로 옳은 것은?
+1 articles_article 테이블 자체가 DB에서 삭제된다.
+2 migration 파일까지 함께 삭제된다.
+3 모든 레코드가 삭제되고 테이블은 남는다.
+4 삭제된 행은 휴지통에 보관되어 복구할 수 있다.
+A 3
+E delete()는 데이터(행)를 지운다. 테이블 구조와 migration은 그대로다. 강의 확인문제 11번.
+
+# 27
+Q `article = Article.objects.create(title='a', content='b')` 직후 `article.pk`의 값은?
+1 `None` — save()를 호출해야 생긴다.
+2 `0`
+3 `'a'`
+4 DB가 배정한 정수 pk
+A 4
+E create()는 생성과 저장을 한 번에 하고 저장된 객체를 반환하므로 pk가 이미 있다.
+
+# 28
+Q ORM의 쿼리 처리 순서로 **옳은** 것은?
+1 Python 코드 → DB 실행 → SQL 변환 → Python 객체로 변환
+2 SQL 작성 → Python 코드 변환 → DB 실행 → QuerySet 반환
+3 Python 코드 → SQL 변환 → DB 실행 → Python 객체로 변환
+4 DB 실행 → SQL 변환 → Python 코드 → QuerySet 반환
+A 3
+E QuerySet API(Python) → ORM이 SQL로 변환 → DB 실행 → 결과를 QuerySet·인스턴스로 변환해 돌려준다.
+
+# 29
+Q `Article.objects.filter(title='Welcome')`과 **같은 결과**를 내는 코드는?
+1 `Article.objects.get(title='Welcome')`
+2 `Article.objects.filter(title__contains='Welcome')`
+3 `Article.objects.filter(title__exact='Welcome')`
+4 `Article.objects.exclude(title='Welcome')`
+A 3
+E lookup을 생략하면 exact. ①은 반환 타입이 다르고(인스턴스), ②는 'Welcome!' 같은 제목도 포함한다.
+
+# 30
+Q 기본 설정에서 `article.id`와 `article.pk`에 대한 설명으로 **옳은** 것은?
+1 id는 DB 값, pk는 저장 전 임시 값이다.
+2 둘은 같은 기본키 값을 가리킨다.
+3 pk는 save() 후에만, id는 생성 즉시 값이 있다.
+4 id는 문자열, pk는 정수로 반환된다.
+A 2
+E 자동 생성 기본키 필드 이름이 id이고, pk는 "기본키"를 가리키는 별칭이다. 저장 전엔 둘 다 None.
+
+@@ 05
+# 21
+Q form은 `method="POST"`인데 create view에서 `title = request.GET.get('title')`로 꺼냈다. title의 값은?
+1 POST 데이터가 GET으로 자동 변환되어 입력값이 들어간다.
+2 `None`
+3 KeyError가 즉시 발생한다.
+4 CSRF 검증에 실패해 403이 발생한다.
+A 2
+E POST 데이터는 request.POST에 있다. request.GET에는 해당 키가 없으니 get()은 None. 그대로 저장하면 NOT NULL 제약 에러로 이어질 수 있다.
+
+# 22
+Q Update 기능의 edit와 update view 역할로 **옳은** 것은?
+1 edit는 DB를 수정하고, update는 기존 값이 채워진 페이지를 보여준다.
+2 둘 다 DB에 저장된 데이터를 직접 수정한다.
+3 edit는 기존 값이 채워진 페이지를 보여주고, update는 DB를 수정한다.
+4 edit가 GET·POST를 모두 처리하므로 update는 필요 없다.
+A 3
+E new/create와 같은 구조. 보여주기(edit, GET) + 저장(update, POST).
+
+# 23
+Q 삭제 요청을 보내려고 `<form method="DELETE">`로 작성했다. 실제로 어떻게 전송되는가?
+1 브라우저가 지원하지 않는 값이라 GET으로 전송된다.
+2 DELETE 요청이 정상 전송되어 삭제된다.
+3 Django가 DELETE를 POST로 바꿔 처리한다.
+4 CSRF 토큰과 함께 DELETE 메서드로 전송된다.
+A 1
+E HTML form은 GET·POST만 지원한다. 잘못된 method 값은 기본값인 GET으로 처리된다.
+
+# 24
+Q 게시글 저장 후 `return redirect('articles:detail')`처럼 **pk 없이** 쓰면?
+1 pk를 생략했으니 `/articles/` 목록으로 이동한다.
+2 NoReverseMatch 에러가 난다.
+3 가장 최근에 작성한 글의 상세로 이동한다.
+4 같은 create 페이지를 다시 렌더링한다.
+A 2
+E detail URL에는 `<int:pk>`가 있으므로 redirect에도 인자가 필요하다: `redirect('articles:detail', article.pk)`.
+
+# 25
+Q redirect()에 대한 설명으로 **옳지 않은** 것은?
+1 URL 이름과 인자를 받아 이동할 주소를 만들 수 있다.
+2 기본적으로 302 상태 코드와 이동할 주소로 응답한다.
+3 클라이언트가 새 주소로 GET 요청을 다시 보내게 한다.
+4 그 전에 만든 객체를 DB에 자동 저장해 준다.
+A 4
+E 저장은 view가 save()로 먼저 해야 한다. redirect는 이동 응답을 만들 뿐.
+
+# 26
+Q `{% csrf_token %}`을 빼먹은 POST form을 제출했을 때의 응답 상태 코드는?
+1 403
+2 404
+3 302
+4 500
+A 1
+E 403 Forbidden — CSRF verification failed. 요청은 도착했지만 거부된 것.
+
+# 27
+Q POST로 게시글을 작성한 뒤, 전송된 title·content 값을 개발자 도구에서 확인할 수 있는 곳은?
+1 주소창 URL 뒤의 쿼리 스트링
+2 브라우저의 방문 기록(History)
+3 Application 탭의 Cookies
+4 Network 탭의 Payload
+A 4
+E POST 데이터는 HTTP Body에 담겨 URL에 안 보인다. Payload에서 csrfmiddlewaretoken, title, content를 확인할 수 있다.
+
+# 28
+Q POST 방식의 특징으로 **옳은** 것은?
+1 요청 URL과 데이터가 브라우저 히스토리에 남는다.
+2 데이터가 HTTP Body에 담겨 URL에 드러나지 않는다.
+3 같은 요청은 캐싱된 결과로 빠르게 응답된다.
+4 URL 길이 제한 때문에 대량 데이터 전송에 부적합하다.
+A 2
+E ①③④는 모두 GET의 특징이다.
+
+# 29
+Q CSRF 공격이 성공할 수 있는 핵심 원리는?
+1 사용자가 비밀번호를 공격자에게 직접 알려 줘서
+2 서버가 HTTPS를 쓰지 않고 HTTP로 통신해서
+3 공격자가 서버의 DB에 직접 접속할 수 있어서
+4 브라우저가 세션 쿠키를 자동으로 붙여서
+A 4
+E 위조된 요청에도 정상 인감도장(세션 쿠키)이 자동으로 찍혀 가는 게 문제. 그래서 페이지 출처를 증명하는 CSRF 토큰을 따로 요구한다.
+
+# 30
+Q 게시글 저장 후 `render(request, 'articles/create.html')`로 완료 페이지를 보여줬다. 이 페이지에서 새로고침(F5)하면?
+1 화면만 다시 그려지고 아무 일도 없다.
+2 detail 페이지로 자동 이동한다.
+3 같은 POST가 다시 전송될 수 있다.
+4 CSRF 토큰이 만료되어 항상 403이 난다.
+A 3
+E POST 결과를 render로 보여준 페이지에서 새로고침하면 같은 POST가 재전송되어 글이 중복 생성될 수 있다. 그래서 저장 후에는 redirect(POST-Redirect-GET).
+
+@@ 06
+# 21
+Q 입력창에 placeholder나 class 같은 **HTML 속성**을 지정하는 곳은?
+1 widget의 `attrs`
+2 Meta의 `fields`
+3 Meta의 `exclude`
+4 모델 필드의 `default`
+A 1
+E `forms.TextInput(attrs={'class': 'my-title', 'placeholder': '...'})`. 강의 확인문제 9번.
+
+# 22
+Q widget과 attrs에 대한 설명으로 **옳지 않은** 것은?
+1 widget은 필드를 어떤 HTML 입력 요소로 그릴지 정한다.
+2 attrs는 그 입력 요소에 붙일 HTML 속성을 정한다.
+3 widget을 바꿔도 DB 컬럼의 자료형은 바뀌지 않는다.
+4 attrs는 ModelForm의 Meta 안에 반드시 작성해야 한다.
+A 4
+E attrs는 widget에 넘기는 딕셔너리다. Meta의 필수 속성은 model과 fields(또는 exclude).
+
+# 23
+Q 일반 Form(forms.Form)에 대한 설명으로 **옳은** 것은?
+1 유효성 검사는 ModelForm에서만 할 수 있다.
+2 일반 Form에는 is_valid() 메서드가 없다.
+3 is_valid()로 검증할 수 있지만 save()는 없다.
+4 검증 없이 입력값을 바로 DB에 저장한다.
+A 3
+E 검증은 Form과 ModelForm 공통 기능. 모델과 연결된 save()만 ModelForm에 있다.
+
+# 24
+Q ModelForm Meta의 fields·exclude에 대한 설명으로 **옳은** 것은?
+1 exclude에 넣은 필드는 DB 테이블에서도 삭제된다.
+2 fields에 적지 않은 필드는 모델 정의에서 사라진다.
+3 exclude에 넣으면 그 필드의 유효성 검사만 꺼진다.
+4 모델 필드 중 무엇을 폼의 입력 칸으로 둘지만 정한다.
+A 4
+E fields/exclude는 폼 구성 설정일 뿐, 모델이나 DB 구조에는 영향이 없다.
+
+# 25
+Q `form = ArticleForm(request.POST)`로 만든 form에 대한 설명으로 **옳은** 것은?
+1 데이터가 없는 unbound form이라 빈 입력창만 보여준다.
+2 사용자 입력이 담긴 bound form이다.
+3 이미 DB에 저장된 모델 인스턴스다.
+4 instance를 넘기지 않아 생성 시 에러가 난다.
+A 2
+E 데이터가 들어간(bound) 폼이라 is_valid()로 검사할 수 있다. 저장은 save()를 해야 일어난다.
+
+# 26
+Q `form.is_valid()`가 True를 반환한 **직후**의 DB 상태는?
+1 이미 새 글이 저장되어 있다.
+2 아직 아무것도 저장되지 않았다.
+3 임시 테이블에 저장되어 있다.
+4 commit=False 상태로 저장되어 있다.
+A 2
+E 검증과 저장은 별개다. is_valid()는 검사만 하고, 저장은 form.save()가 한다.
+
+# 27
+Q is_valid()를 통과한 뒤 **검증된** title 값을 꺼내는 코드는?
+1 `form.title`
+2 `form.validated_data['title']`
+3 `form.errors['title']`
+4 `form.cleaned_data['title']`
+A 4
+E 검증을 통과한 값은 cleaned_data에 담긴다. validated_data는 Django REST Framework(serializer)의 이름이라 헷갈리기 쉽다. form.errors는 에러 메시지.
+
+# 28
+Q 통합 update view에서 GET 요청일 때 `form = ArticleForm()`으로 instance 없이 만들면?
+1 기존 값이 채워진 수정 폼이 나온다.
+2 빈 폼이 나와 기존 내용이 보이지 않는다.
+3 수정 대상이 없어 에러가 발생한다.
+4 새 글 작성 페이지로 redirect된다.
+A 2
+E 수정 페이지는 GET에서도 `ArticleForm(instance=article)`이어야 기존 값이 채워진다.
+
+# 29
+Q `{{ form.as_table }}`로 폼을 출력할 때 필요한 것은?
+1 아무것도 없다. table 태그까지 자동으로 만들어진다.
+2 Meta에 `table = True`를 설정해야 한다.
+3 `<table>` 태그로 직접 감싸야 한다.
+4 각 필드의 widget을 Table로 바꿔야 한다.
+A 3
+E as_table은 `<tr>`만, as_ul은 `<li>`만 출력한다. 바깥 table·ul 태그는 직접 쓴다.
+
+# 30
+Q 통합 create view에서 POST 요청이 is_valid()에서 **False**가 나왔다. 다음에 일어나는 일은?
+1 if를 빠져나와 에러가 담긴 form으로 render한다.
+2 else 블록으로 넘어가 빈 폼을 새로 만든다.
+3 redirect로 detail 페이지에 이동한다.
+4 반환값이 없어 view가 None을 반환하며 에러가 난다.
+A 1
+E else는 GET일 때만 실행된다. 검증 실패한 POST는 if 바깥의 context/render로 내려가 에러 메시지를 보여준다.
+
+@@ 07
+# 21
+Q `MEDIA_ROOT = BASE_DIR / 'media'`, `upload_to='images/'`인 ImageField에 cat.png를 올렸다(이름 충돌 없음). DB의 image 컬럼에 저장되는 값은?
+1 `media/images/cat.png`
+2 `images/cat.png`
+3 `BASE_DIR/media/images/cat.png`
+4 `/media/images/cat.png`
+A 2
+E DB에는 MEDIA_ROOT 기준 상대 경로만 저장된다. 실제 파일은 BASE_DIR/media/images/cat.png에 있다.
+
+# 22
+Q 위 파일의 웹 주소는? (`MEDIA_URL = 'media/'`, 개발 서버)
+1 `http://127.0.0.1:8000/media/images/cat.png`
+2 `http://127.0.0.1:8000/images/cat.png`
+3 `http://127.0.0.1:8000/static/images/cat.png`
+4 `http://127.0.0.1:8000/articles/media/cat.png`
+A 1
+E 서버 주소 + MEDIA_URL + DB에 저장된 상대 경로. `article.image.url`이 이 주소를 만들어 준다.
+
+# 23
+Q STATICFILES_DIRS의 `static/style.css`와 `articles/static/style.css`가 **둘 다** 있을 때 `{% static 'style.css' %}`가 제공하는 파일은?
+1 articles 앱의 style.css
+2 두 파일이 합쳐진 style.css
+3 STATICFILES_DIRS 쪽 파일
+4 이름이 겹쳐서 에러가 발생한다.
+A 3
+E 탐색 순서는 STATICFILES_DIRS가 먼저, 그다음 각 앱의 static. 먼저 찾은 파일이 쓰인다.
+
+# 24
+Q `STATICFILES_DIRS`의 형태로 **옳은** 것은?
+1 추가로 탐색할 **폴더** 경로들의 리스트
+2 제공할 정적 **파일** 이름들의 리스트
+3 정적 파일 URL 접두사 문자열
+4 collectstatic 결과를 모으는 단일 폴더
+A 1
+E `[BASE_DIR / 'static']`처럼 폴더 목록. ③은 STATIC_URL, ④는 STATIC_ROOT.
+
+# 25
+Q `{% load static %}`과 `{% static '...' %}`의 역할로 **옳은** 것은?
+1 load static이 URL을 만들고, static 태그는 선언만 한다.
+2 load static은 태그를 불러오는 선언, static 태그가 URL을 만든다.
+3 둘은 같은 기능이라 하나만 써도 된다.
+4 load static은 settings.py에 한 번만 작성한다.
+A 2
+E load는 "이 템플릿에서 static 태그를 쓰겠다"는 선언(템플릿마다 필요), static 태그가 STATIC_URL을 붙여 주소를 만든다.
+
+# 26
+Q form에 enctype 없이 `method="POST"`만 쓴 채 이미지를 업로드하면?
+1 이미지가 정상적으로 업로드되어 저장된다.
+2 CSRF 검증에 실패해 403이 난다.
+3 이미지가 request.POST에 담겨 저장된다.
+4 request.FILES가 비어 업로드되지 않는다.
+A 4
+E multipart/form-data가 아니면 파일 내용이 전송되지 않는다. 이미지 필드가 blank=True면 에러 없이 이미지만 빠진 채 저장돼서 더 헷갈린다.
+
+# 27
+Q 파일 업로드 form의 enctype과 `{% csrf_token %}`에 대한 설명으로 **옳은** 것은?
+1 enctype은 파일 인코딩용, csrf_token은 위조 방지용이다.
+2 enctype="multipart/form-data"를 쓰면 csrf_token은 생략해도 된다.
+3 csrf_token이 파일을 multipart 형식으로 인코딩해 준다.
+4 파일 업로드 form은 GET 방식으로 보내야 csrf_token이 필요 없다.
+A 1
+E 둘은 전혀 다른 기능이라 파일 업로드 POST form에는 둘 다 필요하다.
+
+# 28
+Q 다음 함수를 upload_to에 지정했을 때, **새 글**의 첫 업로드에서 생길 수 있는 문제는?
+```python
+def articles_image_path(instance, filename):
+    return f'images/{instance.pk}/{filename}'
+```
+1 filename이 항상 None이라 에러가 난다.
+2 upload_to에는 함수를 쓸 수 없어 에러가 난다.
+3 pk가 None이라 images/None/ 경로가 된다.
+4 MEDIA_ROOT가 무시되고 static 폴더에 저장된다.
+A 3
+E upload_to는 함수(instance, filename → 경로 문자열)도 받는다. 다만 새 객체는 파일 저장 시점에 아직 pk가 없을 수 있다.
+
+# 29
+Q settings.py에 MEDIA_ROOT·MEDIA_URL만 설정하고 프로젝트 urls.py에 `static(...)`을 추가하지 않았다. 업로드 이미지 주소로 접속하면? (개발 서버)
+1 정상적으로 이미지가 보인다.
+2 static 폴더에서 대신 찾아 보여준다.
+3 403 Forbidden이 난다.
+4 일치하는 URL 패턴이 없어 404가 난다.
+A 4
+E 개발 서버는 static은 자동 제공하지만 media는 직접 URL 규칙을 추가해야 제공한다.
+
+# 30
+Q 다음 중 Media file에 해당하는 것은?
+1 Bootstrap CSS 파일
+2 사이트 상단 로고 이미지
+3 회원이 올린 프로필 사진
+4 프로젝트 공통 JavaScript 파일
+A 3
+E 기준은 "누가 만들었나". 사용자가 업로드하면 Media, 개발자가 미리 넣어 두면 Static(이미지라도).
+
+@@ 08
+# 21
+Q HTTP의 특징이 **아닌** 것은?
+1 Stateful
+2 Stateless
+3 Connectionless
+4 요청-응답 구조
+A 1
+E HTTP는 무상태(Stateless)·비연결 지향(Connectionless). 강의 확인문제 1번.
+
+# 22
+Q 쿠키의 주된 사용 목적이 **아닌** 것은?
+1 데이터를 영구 보관하는 DB 역할
+2 로그인 상태를 유지하는 세션 관리
+3 테마·언어 같은 사용자 개인화 설정
+4 사이트 방문 기록 같은 행동 트래킹
+A 1
+E 쿠키는 작은 데이터 조각이다. DB를 대신하지 않는다. 강의 확인문제 3번.
+
+# 23
+Q Django 기본 User 모델에 **없는** 필드는?
+1 `username`
+2 `is_superuser`
+3 `date_joined`
+4 `phone_number`
+A 4
+E 이런 필드가 필요해질 수 있어서 처음부터 Custom User로 시작한다. 강의 확인문제 6번.
+
+# 24
+Q "응답을 보낸 뒤 연결을 끊는" HTTP의 특성을 뜻하는 것은?
+1 Stateless
+2 Connectionless
+3 Stateful
+4 Persistent cookie
+A 2
+E Connectionless = 연결을 유지하지 않음, Stateless = 이전 요청 상태를 기억하지 않음. 비슷해 보여도 다른 개념.
+
+# 25
+Q `AUTH_USER_MODEL = 'accounts.User'`만 설정하고 accounts 앱을 INSTALLED_APPS에 **등록하지 않으면**?
+1 등록되지 않은 모델을 가리켜 에러가 난다.
+2 AUTH_USER_MODEL이 앱 등록을 대신해 정상 동작한다.
+3 자동으로 기본 auth.User가 대신 쓰인다.
+4 migrate할 때 accounts 앱이 자동으로 등록된다.
+A 1
+E AUTH_USER_MODEL은 유저 모델 지정, INSTALLED_APPS는 앱 등록 — 둘 다 해야 한다. 빠지면 ImproperlyConfigured.
+
+# 26
+Q 로그인 view 코드 중 **로그인 세션을 실제로 만드는** 것은?
+1 `form.is_valid()`
+2 `form.get_user()`
+3 `auth_login(request, user)`
+4 `redirect('articles:index')`
+A 3
+E is_valid는 검증, get_user는 유저 꺼내기, redirect는 이동. 세션 생성은 login() 함수.
+
+# 27
+Q 쿠키와 세션의 **공통 목적**은?
+1 비밀번호를 암호화해 저장하기 위해
+2 서버 부하를 여러 서버로 분산하기 위해
+3 상태 정보를 유지하고 사용자를 식별하기 위해
+4 데이터베이스를 백업하기 위해
+A 3
+E 둘 다 Stateless한 HTTP의 한계를 보완한다. 강의 확인문제 12번.
+
+# 28
+Q Custom User를 Django 기본 사용자 관리 화면(UserAdmin)으로 Admin에 등록하는 코드는?
+1 `admin.site.register(User)`
+2 `admin.site.register(User, UserAdmin)`
+3 `admin.site.register(UserAdmin)`
+4 `admin.register(User, AUTH_USER_MODEL)`
+A 2
+E `from django.contrib.auth.admin import UserAdmin` 후 모델과 함께 등록한다.
+
+# 29
+Q Expires나 Max-Age 없이 발급된 쿠키는 언제 사라지는가?
+1 서버가 삭제할 때까지 영구히 유지된다.
+2 발급 1시간 뒤 자동으로 삭제된다.
+3 다음 요청부터는 전송되지 않는다.
+4 브라우저를 닫으면(세션 종료) 삭제된다.
+A 4
+E 이런 쿠키를 session cookie라 한다. 기간을 지정하면 persistent cookie.
+
+# 30
+Q 크롬에서 로그인한 상태로 같은 사이트를 시크릿 창으로 열면 로그인되어 있지 않다. 이유는?
+1 서버가 브라우저 종류별로 세션을 금지해서
+2 Django가 한 계정당 하나의 세션만 허용해서
+3 CSRF 토큰이 창마다 달라 403이 나서
+4 새 창에는 sessionid 쿠키가 없어서
+A 4
+E 서버는 sessionid 쿠키로 사용자를 알아본다. 쿠키 저장소가 분리된 창에서는 보낼 sessionid가 없다.
+
+@@ 09
+# 21
+Q 비로그인 상태로 `@login_required`가 붙은 `/articles/create/`에 접근하면 이동하는 주소는?
+1 `/articles/?next=/articles/create/`
+2 `/accounts/signup/?next=/articles/create/`
+3 `/admin/login/?next=/articles/create/`
+4 `/accounts/login/?next=/articles/create/`
+A 4
+E 기본 LOGIN_URL은 /accounts/login/이고, 원래 가려던 주소가 next 파라미터로 붙는다.
+
+# 22
+Q view에서 `if request.user.is_authenticated():`처럼 **괄호를 붙이면**?
+1 bool을 호출해 TypeError가 난다.
+2 정상 동작한다. 괄호는 있어도 그만이다.
+3 괄호 때문에 항상 False를 반환한다.
+4 로그인 페이지로 redirect된다.
+A 1
+E is_authenticated는 True/False 값을 가진 속성이다. `True()`를 호출하는 꼴이라 'bool' object is not callable.
+
+# 23
+Q `AUTH_USER_MODEL = 'accounts.User'`인 프로젝트에서 **기본 UserCreationForm을 그대로** 회원가입에 쓰면?
+1 정상적으로 accounts.User에 가입된다.
+2 auth.User 테이블에 따로 가입된다.
+3 auth.User가 교체돼 있어 에러가 난다.
+4 username 없이 이메일만으로 가입된다.
+A 3
+E 기본 폼의 Meta.model은 auth.User인데, 그 모델은 accounts.User로 교체되어 쓸 수 없다. 그래서 CustomUserCreationForm으로 model을 바꾼다.
+
+# 24
+Q 회원 탈퇴 view에 `@login_required` 없이, **비로그인** 사용자가 POST로 요청하면?
+1 DB의 아무 계정 하나가 삭제된다.
+2 AnonymousUser라 에러가 난다.
+3 정상적으로 index로 redirect된다.
+4 가장 최근에 가입한 계정이 삭제된다.
+A 2
+E request.user가 AnonymousUser라 `delete()`가 NotImplementedError를 낸다. 탈퇴·수정 같은 기능에도 접근 제한이 필요한 이유.
+
+# 25
+Q 템플릿에서 `{{ user }}`와 `{{ request.user }}`에 대한 설명으로 **옳은** 것은?
+1 user만 쓸 수 있고 request.user는 템플릿에서 쓸 수 없다.
+2 request.user만 쓸 수 있고 user는 context로 넘겨야 한다.
+3 둘 다 현재 사용자를 가리키며 템플릿에서 바로 쓸 수 있다.
+4 user는 로그인 사용자, request.user는 비로그인 사용자를 뜻한다.
+A 3
+E 기본 context processor(auth, request)가 둘 다 모든 템플릿에 넣어 준다.
+
+# 26
+Q 다음 코드로 로그아웃 버튼을 누르면 어떻게 되는가?
+```python
+from django.contrib.auth import logout
+
+def logout(request):
+    logout(request)
+    return redirect('articles:index')
+```
+1 자기 자신을 계속 호출해 RecursionError
+2 정상적으로 로그아웃되고 index로 이동한다.
+3 인자 개수가 맞지 않아 TypeError가 난다.
+4 세션은 지워지지만 sessionid 쿠키는 남는다.
+A 1
+E 아래의 def logout이 import한 logout을 덮어쓴다. 로그인 view는 인자가 2개라 TypeError, 로그아웃은 인자가 1개로 맞아서 무한 재귀 — 짝으로 기억.
+
+# 27
+Q signup view에서 POST 요청이 유효성 검사에 **실패**하면 사용자가 보게 되는 화면은?
+1 입력값이 모두 지워진 빈 회원가입 폼
+2 입력값과 에러가 담긴 회원가입 폼
+3 redirect된 index(메인) 페이지
+4 가입 정보로 채워진 로그인 페이지
+A 2
+E context·render가 if/else 바깥이라 실패한 form이 그대로 렌더링된다(6단원 통합 view 구조).
+
+# 28
+Q UserCreationForm이 기본으로 보여주는 입력 필드는?
+1 username, password1, password2
+2 username, password, email
+3 email, password1, password2
+4 username, old_password, new_password1
+A 1
+E password2는 확인용. old_password는 PasswordChangeForm의 필드다.
+
+# 29
+Q `@login_required`가 붙은 게시글 update view에서 **남의 글** 수정을 막으려면?
+1 @login_required를 한 번 더 붙인다.
+2 @require_POST를 추가로 붙인다.
+3 템플릿에서 수정 버튼을 숨겨 접근을 막는다.
+4 request.user가 작성자인지 view에서 확인한다.
+A 4
+E login_required는 "로그인했는가"(인증)만 본다. "이 글을 고칠 수 있는가"(인가)는 직접 검사해야 한다.
+
+# 30
+Q accounts/views.py의 `from .forms import CustomUserCreationForm`에서 `.`이 가리키는 곳은?
+1 프로젝트 최상위 폴더
+2 Django 내장 forms 모듈
+3 settings.py가 있는 설정 폴더
+4 현재 앱(accounts) 폴더
+A 4
+E 명시적 상대 경로. admin.py의 `from .models import Article`과 같은 원리.
+
+@@ 10
+# 21
+Q 비밀번호 변경 후 `update_session_auth_hash(request, user)`를 호출했다. 다른 기기에 로그인되어 있던 세션은?
+1 모든 기기의 로그인이 그대로 유지된다.
+2 현재 기기를 포함해 모든 기기가 로그아웃된다.
+3 다른 기기만 유지되고 현재 기기는 로그아웃된다.
+4 현재 세션만 유지, 다른 기기는 끊긴다.
+A 4
+E 이 함수는 **현재 요청의 세션**만 새 비밀번호 기준으로 갱신한다. 다른 세션은 해시가 맞지 않아 끊긴다(보안상 의도된 동작).
+
+# 22
+Q 해시 함수에 대한 설명으로 **옳지 않은** 것은?
+1 같은 입력이면 같은 해시가 나온다.
+2 입력이 조금만 바뀌어도 해시가 크게 바뀐다.
+3 해시값만 보고 원래 입력을 알아내기는 어렵다.
+4 다른 입력이 같은 해시가 되는 일은 절대 없다.
+A 4
+E 출력 길이가 고정이라 충돌은 원리상 가능하다. 다만 좋은 해시에서는 찾기가 극히 어렵다.
+
+# 23
+Q `EMAIL_BACKEND`를 console.EmailBackend로 설정하고 비밀번호 초기화를 요청했다. **옳은** 것은?
+1 실제 발송 없이 runserver 터미널에 메일 내용이 찍힌다.
+2 사용자의 실제 메일함으로 재설정 메일이 발송된다.
+3 브라우저 개발자 도구의 Console 탭에 메일 내용이 출력된다.
+4 settings.py의 EMAIL_HOST 서버로 메일이 전송된다.
+A 1
+E 여기서 콘솔은 서버를 실행 중인 터미널이다. 브라우저 콘솔과 헷갈리지 말 것. 운영에선 SMTP 등 실제 백엔드가 필요하다.
+
+# 24
+Q 비밀번호 변경 view에서 `form.is_valid()`만 호출하고 `form.save()`를 빠뜨렸다. 결과는?
+1 비밀번호는 바뀌지 않는다.
+2 비밀번호가 바뀌고 로그아웃된다.
+3 비밀번호가 바뀌고 로그인이 유지된다.
+4 기존 비밀번호가 삭제되어 빈 값이 된다.
+A 1
+E is_valid()는 검증만 한다. 새 비밀번호를 해싱해 저장하는 건 save().
+
+# 25
+Q 기존 비밀번호를 **잊어버린** 사용자를 위한 기능과 본인 확인 수단의 연결로 **옳은** 것은?
+1 비밀번호 변경 — 기존 비밀번호 입력
+2 비밀번호 초기화 — 이메일로 받은 재설정 링크
+3 회원정보 수정 — UserChangeForm 입력
+4 비밀번호 초기화 — 기존 비밀번호 입력
+A 2
+E 변경(Change)은 기존 비밀번호를 아는 경우, 초기화(Reset)는 이메일 링크(토큰)로 본인을 확인한다.
+
+# 26
+Q 프로젝트 urls.py에 `path('accounts/', include('django.contrib.auth.urls'))`를 추가했을 때 비밀번호 초기화 페이지 주소는?
+1 `/password_reset/`
+2 `/auth/password_reset/`
+3 `/accounts/password_reset/`
+4 `/accounts/auth/password_reset/`
+A 3
+E 내장 URL의 password_reset/ 앞에 include 접두사 accounts/가 붙는다.
+
+# 27
+Q `AUTH_PASSWORD_VALIDATORS` 설정의 역할은?
+1 비밀번호 해시 알고리즘을 지정한다.
+2 비밀번호 초기화 메일의 발송 방식을 지정한다.
+3 짧거나 흔한 비밀번호를 막는 품질 검사
+4 로그인 실패 횟수를 세어 계정을 잠근다.
+A 3
+E 해싱(PASSWORD_HASHERS)이나 이메일(EMAIL_BACKEND)과는 다른 설정이다.
+
+# 28
+Q 비밀번호 초기화 화면에 **가입되지 않은** 이메일을 입력하면?
+1 계정이 있을 때와 같은 안내 화면이 나온다.
+2 "존재하지 않는 이메일입니다" 에러가 표시된다.
+3 입력한 이메일로 새 계정이 자동 생성된다.
+4 관리자에게 대신 알림 메일이 발송된다.
+A 1
+E 계정이 있는지 없는지를 외부에 노출하지 않으려는 것. 메일 설정이 틀려도 화면은 똑같이 나오니 주의.
+
+# 29
+Q Salt와 Key Stretching의 목적을 바르게 짝지은 것은?
+1 Salt — 무차별 대입 비용 증가 / Key Stretching — 레인보우 테이블 무력화
+2 Salt — 레인보우 테이블 무력화 / Key Stretching — 무차별 대입 비용 증가
+3 Salt — 비밀번호 암호화 키 / Key Stretching — 복호화 속도 향상
+4 둘 다 해시 충돌을 완전히 없애기 위한 기술
+A 2
+E 목적을 뒤바꾼 ①이 대표 함정. Salt는 비밀 키도 아니다.
+
+# 30
+Q 기능과 사용하는 Django 내장 폼의 연결로 **옳지 않은** 것은?
+1 회원가입 — UserCreationForm
+2 로그인 — AuthenticationForm
+3 비밀번호 변경 — UserChangeForm
+4 회원정보 수정 — UserChangeForm
+A 3
+E 비밀번호 변경은 PasswordChangeForm. 이름이 비슷한 UserChangeForm(정보 수정)과 헷갈리게 내는 유형.
